@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Game
 
-class GameSerializer(serializers.HyperlinkedModelSerializer):
+class GameSerializer(serializers.ModelSerializer):
     class Meta:
-        Model = Game
-        fields = ['name']
+        model = Game
+        fields = ['id', 'name']
