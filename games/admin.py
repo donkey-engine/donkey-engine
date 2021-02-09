@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Game
+
+from games.models import Game
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -7,5 +8,4 @@ class GameAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
-# Models for admin panel
 admin.site.register(Game, GameAdmin)
