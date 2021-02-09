@@ -1,4 +1,5 @@
 from rest_framework import generics
+
 from accounts.serializers import SignupSerializer
 
 
@@ -13,5 +14,6 @@ class SignupApiView(generics.GenericAPIView):
 
         username = request.POST.get('username')
         password = request.POST.get('username')
-        if username and password:
+        email = request.POST.get('email')
+        if username and password and email:
             print("work")
