@@ -1,7 +1,7 @@
-from rest_framework import viewsets
-from rest_framework import permissions
-from .serializers import GameSerializer
-from .models import Game
+from rest_framework import permissions, viewsets
+
+from games.models import Game
+from games.serializers import GameSerializer
 
 
 class GameViewSet(viewsets.ModelViewSet):
