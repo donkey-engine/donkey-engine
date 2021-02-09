@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from games.models import Game
 
 
