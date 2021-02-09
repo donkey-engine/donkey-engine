@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'games',
     'servers',
+    'accounts',
 ]
 
 REST_FRAMEWORK = {
