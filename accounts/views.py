@@ -13,10 +13,14 @@ class SignupApiView(generics.GenericAPIView):
         data = serializer(data=self.request.POST)
         data.is_valid(raise_exaption=True)
 
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
+        name_new_user = request.POST.get('username')
+        password_new_user = request.POST.get('password')
+        email_new_user = request.POST.get('email')
 
-        if User.objects.filter(Q(username=username) | Q(email=email)):
-            user = User.objects.create_user(username, password, email)
-            user.save()
+        # if not User.objects.filter(Q(username=name_new_user) | Q(email=email_new_user)):
+
+        if not User.objects.filter(username=name_new_user):
+            if not User.objects.filter(email=email_new_user):
+                user = User(username=name_new_user, password=password_new_user,
+                            email=email_new_user)
+                user.save()
