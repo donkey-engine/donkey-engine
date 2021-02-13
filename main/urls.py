@@ -13,7 +13,7 @@ router.register(r'game', views.GameViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', drf_auth.obtain_auth_token),
-    path('signup/', account_view.SignupApiView)
+    path('signup/', account_view.SignupApiView.as_view()),
 ]
 
 urlpatterns += router.urls
