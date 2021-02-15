@@ -8,6 +8,7 @@ from games import views
 
 router = routers.DefaultRouter()
 router.register(r'game', views.GameViewSet)
+router.register(r'mods', views.ModsViewSet)
 # Linking the API via automatic routing
 
 urlpatterns = [

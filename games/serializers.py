@@ -8,7 +8,7 @@ class GameSerializer(serializers.ModelSerializer):
     """Serializer for Game"""
     class Meta:
         model = Game
-        fields = ['id', 'name', 'version']
+        fields = ['id', 'name']
 
 
 class ModsSerializer(serializers.ModelSerializer):
