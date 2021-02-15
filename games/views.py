@@ -18,3 +18,10 @@ class ModsViewSet(viewsets.ModelViewSet):
     queryset = Mods.objects.all()
     serializer_class = ModsSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class RequestModsViewSet(viewsets.ModelViewSet):
+    serializer_class = GameSerializer
+
+    def get_queryset(self):
+        return Mods.objects.filter(game_id=self.request.kwargs.get('id'))
