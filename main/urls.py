@@ -7,8 +7,9 @@ from accounts import views as account_view
 from games import views
 
 router = routers.DefaultRouter()
+router.register(r'game/(?P<gameid>.+)/mods', views.GameModsViewSet, basename='mods')
 router.register(r'game', views.GameViewSet)
-# Linking the API via automatic routing
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

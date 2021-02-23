@@ -6,3 +6,30 @@ class Game(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Version(models.Model):
+    version = models.CharField(max_length=64, blank=False, null=False)
+    game = models.ForeignKey('Game', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'{self.game}:{self.version}'
+
+    class Meta:
+        verbose_name_plural = 'Versions'
+        verbose_name = 'Version'
+        ordering = ['version']
+
+
+class Mods(models.Model):
+    name = models.CharField(max_length=64, blank=False, null=False)
+    game = models.ForeignKey('Game', on_delete=models.PROTECT)
+    version = models.ForeignKey('Version', on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name_plural = 'Mods'
+        verbose_name = 'Mod'
+        ordering = ['name']
+
+    def __str__(self):
+        return f'{self.name}:{self.version}'
