@@ -9,7 +9,6 @@ from games import views
 router = routers.DefaultRouter()
 router.register(r'game/(?P<gameid>.+)/mods', views.GameModsViewSet, basename='mods')
 router.register(r'game', views.GameViewSet)
-router.register(r'mods', views.ModsViewSet)
 
 
 urlpatterns = [
