@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from games.models import Game
-from games.models import Mods
+from games.models import Game, Mods
 
 
 class GameSerializer(serializers.ModelSerializer):
