@@ -6,11 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    if os.path.exists('.gitignore'):
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.local')
-    else:
-        """If .gitignore doesn't exist, configuration docker is used"""
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.docker')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.local')
 
     try:
         from django.core.management import execute_from_command_line
