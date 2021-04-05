@@ -28,7 +28,7 @@ matrix:
       stage: lint
       <<: *python_base
       script:
-        - echo 'mypy'  # TODO
+        - mypy $(find -name "*.py" -not -path "./venv/*" -not -path "./**/migrations/*.py")
 
     - name: 'isort'
       stage: lint
