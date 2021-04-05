@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import JsonResponse
 from rest_framework import generics, status
+from rest_framework.request import Request
 
 from accounts.serializers import SignupSerializer
 
@@ -9,7 +10,7 @@ from accounts.serializers import SignupSerializer
 class SignupApiView(generics.GenericAPIView):
     serializer_class = SignupSerializer
 
-    def post(self, request):
+    def post(self, request: Request):
         serializer = self.get_serializer_class()
 
         data = serializer(data=self.request.POST)
