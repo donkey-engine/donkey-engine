@@ -27,5 +27,5 @@ def build_server(server_id: int) -> None:
         raise exceptions.BaseError()
 
     builder_class = get_builder(server.game.name)
-    builder = builder_class()
+    builder = builder_class(server)
     builder.build()

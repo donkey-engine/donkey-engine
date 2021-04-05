@@ -10,7 +10,7 @@ class Game(models.Model):
 
 class Version(models.Model):
     version = models.CharField(max_length=64, blank=False, null=False)
-    game = models.ForeignKey('Game', on_delete=models.PROTECT)
+    game = models.ForeignKey('Game', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.game}:{self.version}'
@@ -23,8 +23,8 @@ class Version(models.Model):
 
 class Mods(models.Model):
     name = models.CharField(max_length=64, blank=False, null=False)
-    game = models.ForeignKey('Game', on_delete=models.PROTECT)
-    version = models.ForeignKey('Version', on_delete=models.PROTECT)
+    game = models.ForeignKey('Game', on_delete=models.CASCADE, related_name='versions')
+    version = models.ForeignKey('Version', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = 'Mods'
