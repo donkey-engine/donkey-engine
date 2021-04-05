@@ -1,8 +1,9 @@
 from celery import Celery
+from django.conf import settings
 
 from servers.helpers.builder import build_server
 
-app = Celery('tasks', broker='pyamqp://guest@localhost//')  # FIXME add settings
+app = Celery('tasks', broker=settings.CELERY_BROKER_HOST)
 
 
 @app.task
