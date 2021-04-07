@@ -4,7 +4,7 @@ from games.models import Game, Mods
 from games.serializers import GameSerializer, ModsSerializer
 
 
-class GameViewSet(viewsets.ModelViewSet):
+class GameViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint that allows games to be viewed."""
     queryset = Game.objects.all()
     serializer_class = GameSerializer

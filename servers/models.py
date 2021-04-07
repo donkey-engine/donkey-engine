@@ -6,6 +6,7 @@ from games.models import Game, Mods, Version
 SERVER_STATUSES = (
     ('CREATED', 'Just created'),
     ('BUILDING', 'Currently building'),
+    ('BUILT', 'Server ready to start'),
     ('RUNNING', 'Running'),
     ('STOPPED', 'Stopped'),
 )
@@ -31,5 +32,5 @@ class ServerBuild(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE, null=False)
     status = models.BooleanField(null=True)
     started = models.DateTimeField(auto_now_add=True)
-    finished = models.DateTimeField(blank=True)
+    finished = models.DateTimeField(auto_now=True, blank=True)
     logs = models.TextField()

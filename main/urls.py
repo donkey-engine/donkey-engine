@@ -10,8 +10,8 @@ from accounts import views as account_view
 from games import views
 
 router = routers.DefaultRouter()
-router.register(r'game/(?P<gameid>.+)/mods', views.GameModsViewSet, basename='mods')
-router.register(r'game', views.GameViewSet)
+router.register(r'games/(?P<gameid>.+)/mods', views.GameModsViewSet, basename='mods')
+router.register(r'games', views.GameViewSet, basename='games')
 
 
 urlpatterns = [

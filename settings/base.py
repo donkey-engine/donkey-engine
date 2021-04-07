@@ -106,3 +106,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST')
+
+BUILD_FILE_DIRECTORY = 'build_servers/'
+BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{build_id}/{filename}'
