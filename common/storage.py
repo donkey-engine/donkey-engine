@@ -1,3 +1,6 @@
+import typing as t
+
+
 class BaseStorage:
     """Base storage class for IO."""
 
@@ -18,9 +21,14 @@ class DjangoStorage(BaseStorage):
         with open(filepath, 'rb') as file:
             return file.read()
 
-    def put(self, filepath: str, content: bytes) -> None:
+    def put(self, filepath: str, content: t.Union[str, bytes]) -> None:
         """Save file to filesystem."""
-        with open(filepath, 'wb') as file:
+        if isinstance(content, str):
+            mode = 'w'
+        elif isinstance(content, bytes):
+            mode = 'wb'
+
+        with open(filepath, mode) as file:
             file.write(content)
 
 

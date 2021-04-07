@@ -12,7 +12,7 @@ class Version(models.Model):
     version = models.CharField(max_length=64, blank=False, null=False)
     game = models.ForeignKey('Game', on_delete=models.CASCADE)
 
-    filepath = models.URLField(null=False)
+    filepath = models.CharField(max_length=512, null=False)
 
     def __str__(self):
         return f'{self.game}:{self.version}'
@@ -30,7 +30,7 @@ class Mods(models.Model):
     game = models.ForeignKey('Game', on_delete=models.CASCADE, related_name='versions')
     version = models.ForeignKey('Version', on_delete=models.CASCADE)
 
-    filepath = models.URLField(null=False)
+    filepath = models.CharField(max_length=512, null=False)
 
     def save(self, *args, **kwargs):
         if self.game != self.version.game:
