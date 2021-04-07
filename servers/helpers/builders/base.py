@@ -2,6 +2,9 @@ import logging
 import typing as t
 from io import BytesIO, StringIO
 
+from django.conf import settings
+
+from common.storage import storage
 from servers.helpers.exceptions import BaseError
 from servers.models import Server, ServerBuild
 
@@ -56,3 +59,14 @@ class BaseBuilder:
             self.build_instance.save()
             self.server.status = 'BUILT'
             self.server.save()
+            self._save_files()
+
+    def _save_files(self) -> None:
+        for filename, content in self.files.items():
+            storage.put(
+                settings.BUILD_FILE_TEMPLATE.format(
+                    build_id=self.build_id,
+                    filename=filename,
+                ),
+                content.read(),
+            )

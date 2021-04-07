@@ -6,8 +6,6 @@ from servers.helpers.exceptions import BuilderNotFound
 
 from .base import BaseBuilder, BuildStage
 
-BUILD_DIRECTORY = '/home/behindloader/Документы/{build_id}_{filename}'
-
 
 class MinecraftBuilder(BaseBuilder):
     def get_stages(self) -> t.List[BuildStage]:
@@ -19,10 +17,6 @@ class MinecraftBuilder(BaseBuilder):
             {
                 'name': 'Create running file',
                 'func': self._create_dockerfile,
-            },
-            {
-                'name': 'Save files',
-                'func': self._save_files,
             }
         ]
 
@@ -39,13 +33,3 @@ COPY ./server.jar /home/app/server.jar
 COPY ./server.properties ./home/app/server.properties
 WORKDIR /home/app/
 CMD ["java","-Xmx1024M","-Xms1024M","-jar","server.jar","nogui"]''')
-
-    def _save_files(self) -> None:
-        for filename, content in self.files.items():
-            storage.put(
-                BUILD_DIRECTORY.format(
-                    build_id=self.build_id,
-                    filename=filename,
-                ),
-                content.read(),
-            )
