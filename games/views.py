@@ -1,7 +1,7 @@
 from rest_framework import permissions, viewsets
 
-from games.models import Game, Mods
-from games.serializers import GameSerializer, ModsSerializer
+from games.models import Game, Mod
+from games.serializers import GameSerializer, ModSerializer
 
 
 class GameViewSet(viewsets.ReadOnlyModelViewSet):
@@ -11,10 +11,10 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class GameModsViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = ModsSerializer
+class GameModViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ModSerializer
 
     def get_queryset(self):
         gameid = self.kwargs['gameid']
-        return Mods.objects.filter(game_id=gameid)
+        return Mod.objects.filter(game_id=gameid)
     permission_classes = [permissions.IsAuthenticated]
