@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from games.models import Game, Mods, Version
+from games.models import Game, GameVersion, Mod
 
 SERVER_STATUSES = (
     ('CREATED', 'Just created'),
@@ -14,8 +14,8 @@ SERVER_STATUSES = (
 
 class Server(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=False)
-    version = models.ForeignKey(Version, on_delete=models.CASCADE, null=False)
-    mods = models.ManyToManyField(Mods, blank=True)
+    version = models.ForeignKey(GameVersion, on_delete=models.CASCADE, null=False)
+    mods = models.ManyToManyField(Mod, blank=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(max_length=32, choices=SERVER_STATUSES, default='CREATED')
 

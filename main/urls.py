@@ -6,18 +6,20 @@ from drf_yasg.views import get_schema_view
 from rest_framework import routers
 from rest_framework.authtoken import views as drf_auth
 
-from accounts import views as account_view
-from games import views
+from accounts import views as account_views
+from games import views as games_views
+from servers import views as servers_views
 
 router = routers.DefaultRouter()
-router.register(r'games/(?P<gameid>.+)/mods', views.GameModsViewSet, basename='mods')
-router.register(r'games', views.GameViewSet, basename='games')
+router.register(r'games/(?P<gameid>.+)/mods', games_views.GameModViewSet, basename='mods')
+router.register(r'games', games_views.GameViewSet, basename='games')
+router.register(r'servers', servers_views.ServersViewSet, basename='servers')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', drf_auth.obtain_auth_token),
-    path('signup/', account_view.SignupApiView.as_view()),
+    path('signup/', account_views.SignupApiView.as_view()),
 ]
 
 if settings.DEBUG:

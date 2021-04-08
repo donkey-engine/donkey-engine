@@ -104,6 +104,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = 'media/'
 
 CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST')
 
