@@ -1,4 +1,4 @@
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets
 
 from games.models import Game, Mod
 from games.serializers import GameSerializer, ModSerializer
