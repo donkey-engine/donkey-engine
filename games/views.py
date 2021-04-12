@@ -8,7 +8,6 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint that allows games to be viewed."""
     queryset = Game.objects.all()
     serializer_class = GameSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class GameModViewSet(viewsets.ReadOnlyModelViewSet):
@@ -17,4 +16,3 @@ class GameModViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         gameid = self.kwargs['gameid']
         return Mod.objects.filter(game_id=gameid)
-    permission_classes = [permissions.IsAuthenticated]
