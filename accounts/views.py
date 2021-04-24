@@ -9,16 +9,15 @@ from accounts.serializers import SignupSerializer
 
 class SignupApiView(generics.GenericAPIView):
     serializer_class = SignupSerializer
+    permission_classes = ()
 
     def post(self, request: Request):
-        serializer = self.get_serializer_class()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        data = serializer(data=self.request.POST)
-        data.is_valid(raise_exception=True)
-
-        name_new_user = request.POST.get('username')
-        password_new_user = request.POST.get('password')
-        email_new_user = request.POST.get('email')
+        name_new_user = serializer.validated_data['username']
+        password_new_user = serializer.validated_data['password']
+        email_new_user = serializer.validated_data['email']
 
         if User.objects.filter(Q(username=name_new_user) | Q(email=email_new_user)):
             return JsonResponse({'status': 'error'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
