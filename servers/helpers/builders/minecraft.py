@@ -29,7 +29,5 @@ class MinecraftBuilder(BaseBuilder):
 
     def _create_dockerfile(self) -> None:
         self.files['Dockerfile'] = StringIO('''FROM openjdk:8u212-jre-alpine
-COPY ./server.jar /home/app/server.jar
-COPY ./server.properties ./home/app/server.properties
 WORKDIR /home/app/
 CMD ["java","-Xmx1024M","-Xms1024M","-jar","server.jar","nogui"]''')
