@@ -8,13 +8,12 @@ from accounts.serializers import SignupSerializer
 
 class SignupApiView(generics.GenericAPIView):
     serializer_class = SignupSerializer
+    permission_classes = ()
 
     def post(self, request: Request):
-        serializer = self.get_serializer_class()
-
-        data = serializer(data=request.data)
-        data.is_valid(raise_exception=True)
-        validated_data = data.validated_data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
 
         if User.objects.filter(username=validated_data['username']).exists():
             return JsonResponse(
