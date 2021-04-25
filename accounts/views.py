@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.db.models import Q
 from django.http import JsonResponse
 from rest_framework import generics, status
 from rest_framework.request import Request
@@ -14,15 +13,22 @@ class SignupApiView(generics.GenericAPIView):
     def post(self, request: Request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
 
-        name_new_user = serializer.validated_data['username']
-        password_new_user = serializer.validated_data['password']
-        email_new_user = serializer.validated_data['email']
-
-        if User.objects.filter(Q(username=name_new_user) | Q(email=email_new_user)):
-            return JsonResponse({'status': 'error'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        if User.objects.filter(username=validated_data['username']).exists():
+            return JsonResponse(
+                {'username': ['Already exists']},
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
+        elif User.objects.filter(email=validated_data['email']).exists():
+            return JsonResponse(
+                {'email': ['Already exists']},
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
         else:
-            user = User(username=name_new_user, password=password_new_user,
-                        email=email_new_user)
-            user.save()
+            User.objects.create(
+                username=validated_data['username'],
+                password=validated_data['password'],
+                email=validated_data['email'],
+            )
             return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)

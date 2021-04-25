@@ -24,7 +24,6 @@ class BaseBuilder:
         self.build_instance = ServerBuild.objects.create(
             server=self.server,
         )
-        self.build_id: int = self.build_instance.id
 
     def get_stages(self) -> t.List[BuildStage]:
         return []
@@ -65,7 +64,7 @@ class BaseBuilder:
         for filename, content in self.files.items():
             storage.put(
                 settings.BUILD_FILE_TEMPLATE.format(
-                    build_id=self.build_id,
+                    server_id=self.server.id,
                     filename=filename,
                 ),
                 content.read(),
