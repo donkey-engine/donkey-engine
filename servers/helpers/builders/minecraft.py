@@ -22,7 +22,7 @@ class MinecraftBuilder(BaseBuilder):
 
     def _download_server(self) -> None:
         try:
-            file_content = storage.read(self.server.version.filepath)
+            file_content = storage.read(self.server.version.filepath.path)
         except FileNotFoundError:
             raise BuilderNotFound('"server.jar" not found')
         self.files['server.jar'] = BytesIO(file_content)

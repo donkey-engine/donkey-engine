@@ -1,4 +1,5 @@
 import typing as t
+from pathlib import Path
 
 
 class BaseStorage:
@@ -27,6 +28,8 @@ class DjangoStorage(BaseStorage):
             mode = 'w'
         elif isinstance(content, bytes):
             mode = 'wb'
+
+        Path(filepath).parent.mkdir(parents=True, exist_ok=True)
 
         with open(filepath, mode) as file:
             file.write(content)

@@ -9,6 +9,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     '0.0.0.0',
+    '127.0.0.1',
 ]
 
 INSTALLED_APPS = [
@@ -30,8 +31,12 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
@@ -108,5 +113,5 @@ MEDIA_ROOT = 'media/'
 
 CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST')
 
-BUILD_FILE_DIRECTORY = 'build_servers/'
-BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{build_id}/{filename}'
+BUILD_FILE_DIRECTORY = 'build_servers/{server_id}/'
+BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{filename}'

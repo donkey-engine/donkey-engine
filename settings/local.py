@@ -19,5 +19,17 @@ DATABASES = {
 
 CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST', 'pyamqp://guest@localhost//')
 
-BUILD_FILE_DIRECTORY = 'local_storage/'
-BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{build_id}/{filename}'
+INSTALLED_APPS += [  # type: ignore  # noqa: F405
+    'corsheaders',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://0.0.0.0:8080'
+]
+
+MIDDLEWARE += [  # type: ignore  # noqa: F405
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+BUILD_FILE_DIRECTORY = 'local_storage/{server_id}/'
+BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{filename}'
