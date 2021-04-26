@@ -1,9 +1,34 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework import generics, status
 from rest_framework.request import Request
 
-from accounts.serializers import SignupSerializer
+from accounts.serializers import AuthSerializer, SignupSerializer
+
+
+class AuthApiView(generics.GenericAPIView):
+    serializer_class = AuthSerializer
+    permission_classes = ()
+
+    def post(self, request: Request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = authenticate(
+            request,
+            username=serializer.validated_data['username'],
+            password=serializer.validated_data['password'],
+        )
+        if not user:
+            return JsonResponse({
+                'error': ['Bad credentials']
+            }, status=status.HTTP_403_FORBIDDEN)
+        else:
+            login(request, user)
+            return JsonResponse({
+                'id': user.pk,
+                'username': user.get_username(),
+            })
 
 
 class SignupApiView(generics.GenericAPIView):

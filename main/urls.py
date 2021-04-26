@@ -4,7 +4,6 @@ from django.urls import path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers
-from rest_framework.authtoken import views as drf_auth
 
 from accounts import views as account_views
 from games import views as games_views
@@ -18,7 +17,7 @@ router.register(r'servers', servers_views.ServersViewSet, basename='servers')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', drf_auth.obtain_auth_token),
+    path('auth/', account_views.AuthApiView.as_view()),
     path('signup/', account_views.SignupApiView.as_view()),
 ]
 
