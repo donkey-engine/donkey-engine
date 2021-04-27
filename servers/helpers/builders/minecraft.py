@@ -17,6 +17,10 @@ class MinecraftBuilder(BaseBuilder):
             {
                 'name': 'Create running file',
                 'func': self._create_dockerfile,
+            },
+            {
+                'name': 'Accepting EULA',
+                'func': self._create_eula,
             }
         ]
 
@@ -31,3 +35,6 @@ class MinecraftBuilder(BaseBuilder):
         self.files['Dockerfile'] = StringIO('''FROM openjdk:8u212-jre-alpine
 WORKDIR /home/app/
 CMD ["java","-Xmx1024M","-Xms1024M","-jar","server.jar","nogui"]''')
+
+    def _create_eula(self):
+        self.files['eula.txt'] = StringIO('eula=TRUE')
