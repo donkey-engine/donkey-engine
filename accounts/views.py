@@ -51,7 +51,7 @@ class SignupApiView(generics.GenericAPIView):
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
         else:
-            User.objects.create(
+            User.objects.create_user(
                 username=validated_data['username'],
                 password=validated_data['password'],
                 email=validated_data['email'],
