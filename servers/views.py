@@ -1,70 +1,39 @@
-from django.http.request import HttpRequest
-from django.http.response import JsonResponse
-from rest_framework import generics, status, views, viewsets
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 
 from common.tasks import server_build_task, server_run_task, server_stop_task
 from servers.models import Server
 from servers.serializers import CreateServerSerializer, ServerSerializer
 
 
-class ServersViewSet(viewsets.ReadOnlyModelViewSet):
-    """API endpoint that allows games to be viewed."""
-    serializer_class = ServerSerializer
+class ServersViewSet(viewsets.GenericViewSet, CreateModelMixin, ListModelMixin, RetrieveModelMixin):
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateServerSerializer
+        else:
+            return ServerSerializer
 
     def get_queryset(self):
         return Server.objects.filter(owner=self.request.user)
 
-
-class CreateServerView(generics.CreateAPIView):
-    serializer_class = CreateServerSerializer
-
-
-class BuildServerView(views.APIView):
-    def post(self, request: HttpRequest, server_id: int):
-        try:
-            server = Server.objects.get(
-                id=server_id,
-                owner=self.request.user,
-            )
-        except Server.DoesNotExist:
-            return JsonResponse({
-                'error': ['Not found'],
-            }, status=status.HTTP_404_NOT_FOUND)
+    @action(methods=['post'], detail=True)
+    def build(self, request: Request, pk: str):
+        server = self.get_object()
         server_build_task.delay(server_id=server.id)
-        return JsonResponse({
-            'status': 'ok',
-        })
+        return Response({'status': 'ok'})
 
-
-class RunServerView(views.APIView):
-    def post(self, request: HttpRequest, server_id: int):
-        try:
-            server = Server.objects.get(
-                id=server_id,
-                owner=self.request.user,
-            )
-        except Server.DoesNotExist:
-            return JsonResponse({
-                'error': ['Not found'],
-            }, status=status.HTTP_404_NOT_FOUND)
+    @action(methods=['post'], detail=True)
+    def run(self, request: Request, pk: str):
+        server = self.get_object()
         server_run_task.delay(server_id=server.id)
-        return JsonResponse({
-            'status': 'ok',
-        })
+        return Response({'status': 'ok'})
 
-
-class StopServerView(views.APIView):
-    def post(self, request: HttpRequest, server_id: int):
-        try:
-            server = Server.objects.get(
-                id=server_id,
-                owner=self.request.user,
-            )
-        except Server.DoesNotExist:
-            return JsonResponse({
-                'error': ['Not found'],
-            }, status=status.HTTP_404_NOT_FOUND)
+    @action(methods=['post'], detail=True)
+    def stop(self, request: Request, pk: str):
+        server = self.get_object()
         server_stop_task.delay(server_id=server.id)
-        return JsonResponse({
-            'status': 'ok',
-        })
+        return Response({'status': 'ok'})
