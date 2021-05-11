@@ -1,8 +1,9 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
+                                   RetrieveModelMixin)
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 
 from common.tasks import server_build_task, server_run_task, server_stop_task
 from servers.models import Server
