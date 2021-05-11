@@ -20,7 +20,8 @@ urlpatterns = [
     path('auth/', account_views.AuthApiView.as_view()),
     path('signup/', account_views.SignupApiView.as_view()),
     path('servers/create/', servers_views.CreateServerView.as_view()),
-    path('servers/<int:server_id>/start/', servers_views.StartServerView.as_view()),
+    path('servers/<int:server_id>/build/', servers_views.BuildServerView.as_view()),
+    path('servers/<int:server_id>/run/', servers_views.RunServerView.as_view()),
     path('servers/<int:server_id>/stop/', servers_views.StopServerView.as_view()),
 ]
 
