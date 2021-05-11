@@ -14,5 +14,5 @@ class GameModViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ModSerializer
 
     def get_queryset(self):
-        gameid = self.kwargs['gameid']
+        gameid = self.kwargs.get('game_id')
         return Mod.objects.filter(game_id=gameid)

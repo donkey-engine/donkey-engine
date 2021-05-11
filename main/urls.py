@@ -10,7 +10,7 @@ from games import views as games_views
 from servers import views as servers_views
 
 router = routers.DefaultRouter()
-router.register(r'games/(?P<gameid>.+)/mods', games_views.GameModViewSet, basename='mods')
+router.register(r'games/(?P<game_id>.+)/mods', games_views.GameModViewSet, basename='mods')
 router.register(r'games', games_views.GameViewSet, basename='games')
 router.register(r'servers', servers_views.ServersViewSet, basename='servers')
 
@@ -19,6 +19,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', account_views.AuthApiView.as_view()),
     path('signup/', account_views.SignupApiView.as_view()),
+    path('servers/create/', servers_views.CreateServerView.as_view()),
+    path('servers/<int:server_id>/start/', servers_views.StartServerView.as_view()),
+    path('servers/<int:server_id>/stop/', servers_views.StopServerView.as_view()),
 ]
 
 if settings.DEBUG:
