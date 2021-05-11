@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from games.models import Game, Mod
+from games.models import Game, GameVersion, Mod
 
 
 class GameSerializer(serializers.ModelSerializer):
@@ -10,8 +10,15 @@ class GameSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
+class GameVersionSerializer(serializers.ModelSerializer):
+    """Serializer for GameVersion."""
+    class Meta:
+        model = GameVersion
+        fields = ['id', 'version']
+
+
 class ModSerializer(serializers.ModelSerializer):
     """Serializer for Mods"""
     class Meta:
         model = Mod
-        fields = ['id', 'name', 'game', 'version']
+        fields = ['id', 'name', 'game']
