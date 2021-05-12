@@ -33,3 +33,7 @@ MIDDLEWARE += [  # type: ignore  # noqa: F405
 
 BUILD_FILE_DIRECTORY = 'local_storage/{server_id}/'
 BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{filename}'
+
+REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
+    'rest_framework.renderers.BrowsableAPIRenderer',
+]
