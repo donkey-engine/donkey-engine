@@ -115,7 +115,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/app/donkeyengine/static/'
-MEDIA_ROOT = 'media/'
+MEDIA_ROOT = '/app/donkeyengine/media/'
 
 CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST')
 
