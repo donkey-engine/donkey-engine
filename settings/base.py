@@ -10,6 +10,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
+    'web',
 ]
 
 INSTALLED_APPS = [
@@ -40,6 +41,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
     'PAGE_SIZE': 10
 }
 
@@ -110,9 +114,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = 'media/'
+STATIC_ROOT = '/app/donkeyengine/static/'
+MEDIA_ROOT = '/app/donkeyengine/media/'
 
 CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST')
 
-BUILD_FILE_DIRECTORY = 'build_servers/{server_id}/'
+BUILD_FILE_DIRECTORY = '/app/donkeyengine/build_servers/{server_id}/'
 BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{filename}'
