@@ -110,9 +110,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/app/donkeyengine/static/'
 MEDIA_ROOT = 'media/'
 
 CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST')
 
-BUILD_FILE_DIRECTORY = 'build_servers/{server_id}/'
+BUILD_FILE_DIRECTORY = '/app/donkeyengine/build_servers/{server_id}/'
 BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{filename}'
