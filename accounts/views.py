@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework import generics, status
@@ -57,3 +57,8 @@ class SignupApiView(generics.GenericAPIView):
                 email=validated_data['email'],
             )
             return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
+
+
+def logout_view(request: Request):
+    logout(request)
+    return JsonResponse({'status': 'ok'})
