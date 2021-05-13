@@ -10,15 +10,15 @@ from games import views as games_views
 from servers import views as servers_views
 
 router = routers.DefaultRouter()
-router.register(r'games/(?P<game_id>.+)/mods', games_views.GameModViewSet, basename='mods')
-router.register(r'games', games_views.GameViewSet, basename='games')
-router.register(r'servers', servers_views.ServersViewSet, basename='servers')
+router.register(r'api/games/(?P<game_id>.+)/mods', games_views.GameModViewSet, basename='mods')
+router.register(r'api/games', games_views.GameViewSet, basename='games')
+router.register(r'api/servers', servers_views.ServersViewSet, basename='servers')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', account_views.AuthApiView.as_view()),
-    path('signup/', account_views.SignupApiView.as_view()),
+    path('api/auth/', account_views.AuthApiView.as_view()),
+    path('api/signup/', account_views.SignupApiView.as_view()),
 ]
 
 if settings.DEBUG:
