@@ -5,10 +5,14 @@ from games.models import Game, GameVersion, Mod
 
 SERVER_STATUSES = (
     ('CREATED', 'Just created'),
-    ('BUILDING', 'Currently building'),
     ('BUILT', 'Server ready to start'),
     ('RUNNING', 'Running'),
     ('STOPPED', 'Stopped'),
+)
+
+SERVER_BUILD_KINDS = (
+    ('BUILD', 'Build'),
+    ('RUN', 'Run'),
 )
 
 
@@ -18,6 +22,7 @@ class Server(models.Model):
     mods = models.ManyToManyField(Mod, blank=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(max_length=32, choices=SERVER_STATUSES, default='CREATED')
+    port = models.IntegerField(null=False, default=0)
 
     def save(self, *args, **kwargs):
         if self.game != self.version.game:
@@ -30,7 +35,8 @@ class Server(models.Model):
 
 class ServerBuild(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE, null=False)
-    status = models.BooleanField(null=True)
+    kind = models.CharField(max_length=32, choices=SERVER_BUILD_KINDS, null=True)
+    success = models.BooleanField(null=True)
     started = models.DateTimeField(auto_now_add=True)
     finished = models.DateTimeField(auto_now=True, blank=True)
     logs = models.TextField()
