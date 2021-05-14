@@ -23,5 +23,5 @@ class GameVersionViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GameVersionSerializer
 
     def get_queryset(self):
-        gameid = self.kwargs.get('game_id')
-        return GameVersion.objects.filter(game_id=gameid)
+        game_id = self.request.query_params.get('game_id')
+        return GameVersion.objects.filter(game_id=game_id)
