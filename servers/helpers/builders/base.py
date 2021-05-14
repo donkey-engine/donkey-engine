@@ -23,6 +23,7 @@ class BaseBuilder:
         self.server = server
         self.build_instance = ServerBuild.objects.create(
             server=self.server,
+            kind='BUILD',
         )
 
     def get_stages(self) -> t.List[BuildStage]:
@@ -31,29 +32,28 @@ class BaseBuilder:
     def build(self) -> None:
         logs = []
 
-        self.server.status = 'BUILDING'
-        self.server.save()
-
         for build_stage in self.get_stages():
             try:
                 build_stage['func']()
             except BaseError as exc:
                 logger.exception(exc)
                 logs.append(f'{build_stage["name"]} - {exc}')
-                self.build_instance.status = False
+                self.build_instance.success = False
                 self.build_instance.logs = '\n'.join(logs)
                 self.build_instance.save()
+                break
             except Exception as exc:
                 logger.exception(exc)
                 logs.append(f'{build_stage["name"]} - Unknown error')
-                self.build_instance.status = False
+                self.build_instance.success = False
                 self.build_instance.logs = '\n'.join(logs)
                 self.build_instance.save()
+                break
             else:
                 logs.append(f'{build_stage["name"]} - OK')
         else:
             logs.append('Success')
-            self.build_instance.status = True
+            self.build_instance.success = True
             self.build_instance.logs = '\n'.join(logs)
             self.build_instance.save()
             self.server.status = 'BUILT'

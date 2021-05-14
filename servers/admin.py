@@ -9,8 +9,8 @@ class ServerAdmin(admin.ModelAdmin):  # type: ignore
 
 
 class ServerBuildAdmin(admin.ModelAdmin):  # type: ignore
-    list_display = ('id', 'server', 'status', 'started', 'finished')
-    list_filter = ('server', 'status')
+    list_display = ('id', 'server', 'kind', 'success', 'started', 'finished')
+    list_filter = ('server', 'kind', 'success')
 
 
 admin.site.register(Server, ServerAdmin)

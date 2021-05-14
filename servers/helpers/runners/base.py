@@ -1,9 +1,14 @@
+import logging
+import typing as t
 from pathlib import Path
 
 import docker
 from django.conf import settings
 
 from servers.helpers import exceptions
+from servers.models import Server, ServerBuild
+
+logger = logging.getLogger(__name__)
 
 CONTAINER_NAME_TEMPLATE = ''
 IMAGE_NAME_TEMPLATE = ''
@@ -13,8 +18,14 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
     """Base class for game image/container management."""
     def __init__(self, server_id: int):
         self.server_id: int = server_id
+        self.server = Server.objects.get(id=server_id)
         self.client: docker.DockerClient = docker.from_env()
         self.directory: str = self._get_dockerfile_directory()
+
+        self.build_instance = ServerBuild.objects.create(
+            server_id=self.server_id,
+            kind='RUN',
+        )
 
     def get_container_port(self, attempts=100) -> int:
         """Get container oper port."""
@@ -44,26 +55,73 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
             if container.name == f'server{self.server_id}':
                 container.stop()
                 break
+        self.server.port = 0
+        self.server.status = 'STOPPED'
+        self.server.save()
+        self.build_instance.logs = 'Stopped'
+        self.build_instance.success = True
+        self.build_instance.save()
 
-    def run(self) -> int:
+    def run(self) -> t.Optional[int]:
         """Run server."""
+        logs = []
+
         self.stop()
-        image_name = self.get_or_create_image()
-        self.client.containers.run(
-            image_name,
-            detach=True,
-            volumes=[
-                f'{self.directory}:/home/app',
-            ],
-            ports={
-                '25565/tcp': None,
-            },
-            name=f'server{self.server_id}',
-            remove=True,
-            hostname=f'server{self.server_id}',
-            mem_limit='1024M',
-        )
-        return self.get_container_port()
+        try:
+            image_name = self.get_or_create_image()
+        except Exception as exc:
+            logger.exception(exc)
+            logs.append('Create Minecraft server image - Error')
+            self.build_instance.success = False
+            self.build_instance.logs = '\n'.join(logs)
+            self.build_instance.save()
+            return None
+        else:
+            logs.append('Create Minecraft server image - OK')
+
+        try:
+            self.client.containers.run(
+                image_name,
+                detach=True,
+                volumes=[
+                    f'{self.directory}:/home/app',
+                ],
+                ports={
+                    '25565/tcp': None,
+                },
+                name=f'server{self.server_id}',
+                remove=True,
+                hostname=f'server{self.server_id}',
+                mem_limit='1024M',
+            )
+        except Exception as exc:
+            logger.exception(exc)
+            logs.append('Staring Minecraft server - Error')
+            self.build_instance.success = False
+            self.build_instance.logs = '\n'.join(logs)
+            self.build_instance.save()
+            return None
+        else:
+            logs.append('Staring Minecraft server - OK')
+
+        try:
+            port = self.get_container_port()
+        except Exception as exc:
+            logger.exception(exc)
+            logs.append('Checking Minecraft server - Error')
+            self.build_instance.success = False
+            self.build_instance.logs = '\n'.join(logs)
+            self.build_instance.save()
+            return None
+        else:
+            logs.append(f'Minecraft server port - {port}')
+        self.build_instance.success = True
+        self.build_instance.logs = '\n'.join(logs)
+        self.build_instance.save()
+        self.server.status = 'RUNNING'
+        self.server.port = port
+        self.server.save()
+        return port
 
     def _get_dockerfile_directory(self) -> str:
         return str(
