@@ -29,15 +29,8 @@ class GameTestCase(TestCase):
     def test_servers_list(self):
         c = Client()
 
-        response = c.get(
-            '/api/servers/',
-            {},
-            content_type='application/json',
-        )
-        self.assertEqual(
-            response.status_code,
-            403,
-        )
+        response = c.get('/api/servers/', {}, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
             {
@@ -45,20 +38,10 @@ class GameTestCase(TestCase):
             }
         )
 
-        c.login(
-            username='username',
-            password='password',
-        )
+        c.login(username='username', password='password')
 
-        response = c.get(
-            '/api/servers/',
-            {},
-            content_type='application/json',
-        )
-        self.assertEqual(
-            response.status_code,
-            200,
-        )
+        response = c.get('/api/servers/', {}, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
             {
@@ -92,10 +75,7 @@ class GameTestCase(TestCase):
             },
             content_type='application/json',
         )
-        self.assertEqual(
-            response.status_code,
-            403,
-        )
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
             {
@@ -103,10 +83,7 @@ class GameTestCase(TestCase):
             }
         )
 
-        c.login(
-            username='username',
-            password='password',
-        )
+        c.login(username='username', password='password')
 
         response = c.post(
             '/api/servers/',
@@ -116,10 +93,7 @@ class GameTestCase(TestCase):
             },
             content_type='application/json',
         )
-        self.assertEqual(
-            response.status_code,
-            201,
-        )
+        self.assertEqual(response.status_code, 201)
         last_server = Server.objects.last()
         self.assertEqual(
             response.json(),
@@ -144,10 +118,7 @@ class GameTestCase(TestCase):
             {},
             content_type='application/json',
         )
-        self.assertEqual(
-            response.status_code,
-            403,
-        )
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
             {
@@ -163,10 +134,7 @@ class GameTestCase(TestCase):
             {},
             content_type='application/json',
         )
-        self.assertEqual(
-            response.status_code,
-            403,
-        )
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
             {
@@ -182,10 +150,7 @@ class GameTestCase(TestCase):
             {},
             content_type='application/json',
         )
-        self.assertEqual(
-            response.status_code,
-            403,
-        )
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
             {

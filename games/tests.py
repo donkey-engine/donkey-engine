@@ -23,15 +23,8 @@ class GameTestCase(TestCase):
     def test_games(self):
         c = Client()
 
-        response = c.get(
-            '/api/games/',
-            {},
-            content_type='application/json',
-        )
-        self.assertEqual(
-            response.status_code,
-            403,
-        )
+        response = c.get('/api/games/', {}, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
             {
@@ -39,20 +32,10 @@ class GameTestCase(TestCase):
             }
         )
 
-        c.login(
-            username='username',
-            password='password',
-        )
+        c.login(username='username', password='password')
 
-        response = c.get(
-            '/api/games/',
-            {},
-            content_type='application/json',
-        )
-        self.assertEqual(
-            response.status_code,
-            200,
-        )
+        response = c.get('/api/games/', {}, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
             {
@@ -66,15 +49,8 @@ class GameTestCase(TestCase):
     def test_specific_game(self):
         c = Client()
 
-        response = c.get(
-            f'/api/games/{self.game.id}/',
-            {},
-            content_type='application/json',
-        )
-        self.assertEqual(
-            response.status_code,
-            403,
-        )
+        response = c.get(f'/api/games/{self.game.id}/', {}, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
             {
@@ -82,20 +58,10 @@ class GameTestCase(TestCase):
             }
         )
 
-        c.login(
-            username='username',
-            password='password',
-        )
+        c.login(username='username', password='password')
 
-        response = c.get(
-            f'/api/games/{self.game.id}/',
-            {},
-            content_type='application/json',
-        )
-        self.assertEqual(
-            response.status_code,
-            200,
-        )
+        response = c.get(f'/api/games/{self.game.id}/', {}, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
             {

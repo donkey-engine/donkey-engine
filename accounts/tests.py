@@ -12,11 +12,7 @@ class AuthTestCase(TestCase):
 
         c = Client()
 
-        response = c.post(
-            '/api/auth/',
-            {},
-            content_type='application/json',
-        )
+        response = c.post('/api/auth/', {}, content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json(),
@@ -35,12 +31,7 @@ class AuthTestCase(TestCase):
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(
-            response.json(),
-            {
-                'error': ['Bad credentials'],
-            }
-        )
+        self.assertEqual(response.json(), {'error': ['Bad credentials']})
 
         response = c.post(
             '/api/auth/',
@@ -62,15 +53,8 @@ class AuthTestCase(TestCase):
     def test_signup(self):
         c = Client()
 
-        response = c.post(
-            '/api/signup/',
-            {},
-            content_type='application/json',
-        )
-        self.assertEqual(
-            response.status_code,
-            400,
-        )
+        response = c.post('/api/signup/', {}, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json(),
             {
@@ -89,16 +73,8 @@ class AuthTestCase(TestCase):
             },
             content_type='application/json',
         )
-        self.assertEqual(
-            response.status_code,
-            200,
-        )
-        self.assertEqual(
-            response.json(),
-            {
-                'status': 'ok',
-            }
-        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'ok'})
 
         response = c.post(
             '/api/signup/',
@@ -109,16 +85,8 @@ class AuthTestCase(TestCase):
             },
             content_type='application/json',
         )
-        self.assertEqual(
-            response.status_code,
-            422,
-        )
-        self.assertEqual(
-            response.json(),
-            {
-                'email': ['Already exists'],
-            }
-        )
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json(), {'email': ['Already exists']})
 
         response = c.post(
             '/api/signup/',
@@ -129,13 +97,5 @@ class AuthTestCase(TestCase):
             },
             content_type='application/json',
         )
-        self.assertEqual(
-            response.status_code,
-            422,
-        )
-        self.assertEqual(
-            response.json(),
-            {
-                'username': ['Already exists'],
-            }
-        )
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json(), {'username': ['Already exists']})
