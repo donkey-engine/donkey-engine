@@ -3,7 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from games.models import Game, Mod
-from games.serializers import GameSerializer, GameVersionSerializer, ModSerializer
+from games.serializers import (GameSerializer, GameVersionSerializer,
+                               ModSerializer)
 
 
 class GameViewSet(viewsets.ReadOnlyModelViewSet):
