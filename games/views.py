@@ -1,7 +1,8 @@
 from rest_framework import viewsets
 
-from games.models import Game, Mod
-from games.serializers import GameSerializer, ModSerializer
+from games.models import Game, GameVersion, Mod
+from games.serializers import (GameSerializer, GameVersionSerializer,
+                               ModSerializer)
 
 
 class GameViewSet(viewsets.ReadOnlyModelViewSet):
@@ -16,3 +17,9 @@ class GameModViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         gameid = self.kwargs.get('game_id')
         return Mod.objects.filter(game_id=gameid)
+
+
+class GameVersionViewSet(viewsets.ReadOnlyModelViewSet):
+
+    queryset = GameVersion.objects.all()
+    serializer_class = GameVersionSerializer
