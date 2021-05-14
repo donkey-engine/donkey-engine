@@ -135,3 +135,60 @@ class GameTestCase(TestCase):
                 }
             }
         )
+
+    def test_build_endpoint(self):
+        c = Client()
+
+        response = c.post(
+            f'/api/servers/{self.server.id}/build/',
+            {},
+            content_type='application/json',
+        )
+        self.assertEqual(
+            response.status_code,
+            403,
+        )
+        self.assertEqual(
+            response.json(),
+            {
+                'detail': 'Authentication credentials were not provided.',
+            }
+        )
+
+    def test_stop_endpoint(self):
+        c = Client()
+
+        response = c.post(
+            f'/api/servers/{self.server.id}/stop/',
+            {},
+            content_type='application/json',
+        )
+        self.assertEqual(
+            response.status_code,
+            403,
+        )
+        self.assertEqual(
+            response.json(),
+            {
+                'detail': 'Authentication credentials were not provided.',
+            }
+        )
+
+    def test_run_endpoint(self):
+        c = Client()
+
+        response = c.post(
+            f'/api/servers/{self.server.id}/run/',
+            {},
+            content_type='application/json',
+        )
+        self.assertEqual(
+            response.status_code,
+            403,
+        )
+        self.assertEqual(
+            response.json(),
+            {
+                'detail': 'Authentication credentials were not provided.',
+            }
+        )
