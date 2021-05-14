@@ -9,9 +9,8 @@ from rest_framework.request import Request
 from accounts.serializers import (AuthSerializer, ConfirmEmailSerializer,
                                   SignupSerializer)
 
-
 EMAIL_TEMPLATE = """<h1>Please confirm your email for Donkey Engine account</h1>
-<a href="https://donkey-engine.host/confirm_email/{token}">https://donkey-engine.host/confirm_email/{token}</a>"""
+<a href="https://donkey-engine.host/confirm_email/{token}">https://donkey-engine.host/confirm_email/{token}</a>"""  # noqa: E501
 
 
 class AuthApiView(generics.GenericAPIView):
@@ -96,7 +95,7 @@ class SendEmailConfirmationView(views.APIView):
         token = PasswordResetTokenGenerator().make_token(user=user)
         send_mail(
             'Email confirmation',
-            None,
+            None,  # type: ignore
             None,
             [user.email],
             fail_silently=False,
