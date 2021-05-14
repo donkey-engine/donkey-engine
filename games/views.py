@@ -20,6 +20,8 @@ class GameModViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class GameVersionViewSet(viewsets.ReadOnlyModelViewSet):
-
-    queryset = GameVersion.objects.all()
     serializer_class = GameVersionSerializer
+
+    def get_queryset(self):
+        gameid = self.kwargs.get('game_id')
+        return GameVersion.objects.filter(game_id=gameid)
