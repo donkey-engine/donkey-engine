@@ -122,7 +122,6 @@ CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST')
 BUILD_FILE_DIRECTORY = '/app/donkeyengine/build_servers/{server_id}/'
 BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{filename}'
 
-EMAIL_ENABLED = os.getenv('EMAIL_ENABLED') == 'True'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
