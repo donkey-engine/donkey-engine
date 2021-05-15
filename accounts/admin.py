@@ -15,11 +15,16 @@ class UserServersInline(admin.StackedInline):  # type: ignore
     readonly_fields = ('game',)
 
 
+class ProfileInline(admin.StackedInline):  # type: ignore
+    model = Profile
+    can_delete = False
+    fields = ('email_confirmed',)
+
+
 class NewUserAdmin(UserAdmin):
-    inlines = (UserServersInline,)
+    inlines = (UserServersInline, ProfileInline)
 
 
 admin.site.unregister(User)
 admin.site.unregister(Group)
 admin.site.register(User, NewUserAdmin)
-admin.site.register(Profile)
