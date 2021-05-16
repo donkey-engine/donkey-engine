@@ -1,10 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.http import JsonResponse
-from rest_framework import generics, status
+from rest_framework import exceptions, generics, status, views
 from rest_framework.request import Request
 
-from accounts.serializers import AuthSerializer, SignupSerializer
+from accounts.helpers.email import send_email_confirmation
+from accounts.serializers import (AuthSerializer, ConfirmEmailSerializer,
+                                  SignupSerializer)
 
 
 class AuthApiView(generics.GenericAPIView):
@@ -57,6 +60,41 @@ class SignupApiView(generics.GenericAPIView):
                 email=validated_data['email'],
             )
             return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
+
+
+class ConfirmEmailView(generics.GenericAPIView):
+    serializer_class = ConfirmEmailSerializer
+
+    def post(self, request: Request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+
+        user = self.request.user
+
+        pass_gen = PasswordResetTokenGenerator()
+        if not pass_gen.check_token(user=user, token=validated_data['token']):
+            raise exceptions.PermissionDenied()
+        user.profile.email_confirmed = True
+        user.profile.save()
+        return JsonResponse({'status': 'ok'})
+
+
+class ResendEmailConfirmationView(views.APIView):
+    def post(self, request: Request):
+        user = self.request.user
+
+        if user.profile.email_confirmed:
+            return JsonResponse({
+                'error': 'Email already confirmed',
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        send_email_confirmation(user)
+
+        return JsonResponse({
+            'status': 'ok',
+            'email': user.email,
+        })
 
 
 def logout_view(request: Request):
