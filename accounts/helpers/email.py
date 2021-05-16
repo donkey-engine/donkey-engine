@@ -1,7 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
-from django.conf import settings
 
 EMAIL_TEMPLATE = """<h1>Please confirm your email for Donkey Engine account</h1>
 <p>Please follow the link to verify your account:</p>
