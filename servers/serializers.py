@@ -15,10 +15,6 @@ class ServerSerializer(serializers.ModelSerializer):
 
 
 class CreateServerSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    game = GameSerializer(read_only=True)
-    version = GameVersionSerializer(read_only=True)
-
     game_id = serializers.IntegerField(write_only=True)
     version_id = serializers.IntegerField(write_only=True)
 

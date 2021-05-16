@@ -106,7 +106,9 @@ class GameTestCase(TestCase):
                 'version': {
                     'id': self.version.id,
                     'version': self.version.version,
-                }
+                },
+                'port': 0,
+                'status': 'CREATED',
             }
         )
 
