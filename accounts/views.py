@@ -1,16 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.mail import send_mail
 from django.http import JsonResponse
 from rest_framework import exceptions, generics, status, views
 from rest_framework.request import Request
 
+from accounts.helpers.email import send_email_confirmation
 from accounts.serializers import (AuthSerializer, ConfirmEmailSerializer,
                                   SignupSerializer)
-
-EMAIL_TEMPLATE = """<h1>Please confirm your email for Donkey Engine account</h1>
-<a href="https://donkey-engine.host/confirm_email/{token}">https://donkey-engine.host/confirm_email/{token}</a>"""  # noqa: E501
 
 
 class AuthApiView(generics.GenericAPIView):
@@ -83,7 +80,7 @@ class ConfirmEmailView(generics.GenericAPIView):
         return JsonResponse({'status': 'ok'})
 
 
-class SendEmailConfirmationView(views.APIView):
+class ResendEmailConfirmationView(views.APIView):
     def post(self, request: Request):
         user = self.request.user
 
@@ -92,17 +89,7 @@ class SendEmailConfirmationView(views.APIView):
                 'error': 'Email already confirmed',
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        token = PasswordResetTokenGenerator().make_token(user=user)
-        send_mail(
-            'Email confirmation',
-            None,  # type: ignore
-            None,
-            [user.email],
-            fail_silently=False,
-            html_message=EMAIL_TEMPLATE.format(
-                token=token,
-            ),
-        )
+        send_email_confirmation(user)
 
         return JsonResponse({
             'status': 'ok',
