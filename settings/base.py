@@ -1,6 +1,16 @@
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
+
+def getenv(env):
+    try:
+        os.environ[env]
+    except KeyError:
+        raise ImproperlyConfigured(f'Set the {env} environment variable')
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -114,8 +124,8 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/app/donkeyengine/static/'
-MEDIA_ROOT = '/app/donkeyengine/media/'
+STATIC_ROOT = getenv('STATIC_ROOT')
+MEDIA_ROOT = getenv('MEDIA_ROOT')
 
 CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST')
 
