@@ -53,5 +53,6 @@ matrix:
         - python manage.py check --settings=settings.ci
 
 env:
-  - STATIC_ROOT=/app/donkeyengine/static/
-  - MEDIA_ROOT=/app/donkeyengine/media/
+  global:
+    - STATIC_ROOT=/app/donkeyengine/static/
+    - MEDIA_ROOT=/app/donkeyengine/media/
