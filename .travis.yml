@@ -51,3 +51,7 @@ matrix:
         - python manage.py makemigrations --check --settings=settings.ci
         - python manage.py migrate --settings=settings.ci
         - python manage.py check --settings=settings.ci
+
+env:
+  - STATIC_ROOT=/app/donkeyengine/static/
+  - MEDIA_ROOT=/app/donkeyengine/media/
