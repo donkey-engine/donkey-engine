@@ -1,7 +1,6 @@
 import os
 
 from celery import Celery
-from celery.schedules import crontab
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.local')
 app = Celery('tasks', broker=os.getenv('CELERY_BROKER_HOST', 'pyamqp://guest@localhost//'))

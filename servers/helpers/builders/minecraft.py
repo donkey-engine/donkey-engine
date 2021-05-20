@@ -44,7 +44,6 @@ CMD ["java","-Xmx1024M","-Xms1024M","-jar","server.jar","nogui"]''')
         self.files['eula.txt'] = StringIO('eula=TRUE')
 
     def _init_server_properties(self) -> None:
-        
         self.files['server.properties'] = StringIO('''#Minecraft server properties
 #Thu Jul 07 16:45:52 MSK 2016
 spawn-protection=16
