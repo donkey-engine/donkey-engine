@@ -38,12 +38,7 @@ class GameTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            {
-                'count': 1,
-                'next': None,
-                'previous': None,
-                'results': [{'id': self.game.id, 'name': self.game.name}]
-            }
+            [{'id': self.game.id, 'name': self.game.name}]
         )
 
     def test_specific_game(self):
