@@ -44,24 +44,19 @@ class GameTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            {
-                'count': 1,
-                'next': None,
-                'previous': None,
-                'results': [{
-                    'id': self.server.id,
-                    'port': 0,
-                    'status': 'CREATED',
-                    'game': {
-                        'id': self.game.id,
-                        'name': self.game.name,
-                    },
-                    'version': {
-                        'id': self.version.id,
-                        'version': self.version.version,
-                    }
-                }]
-            }
+            [{
+                'id': self.server.id,
+                'port': 0,
+                'status': 'CREATED',
+                'game': {
+                    'id': self.game.id,
+                    'name': self.game.name,
+                },
+                'version': {
+                    'id': self.version.id,
+                    'version': self.version.version,
+                }
+            }]
         )
 
     def test_create_server(self):

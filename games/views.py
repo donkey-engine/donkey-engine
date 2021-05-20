@@ -16,11 +16,6 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
     def versions(self, request, pk):
         game = self.get_object()
         queryset = game.gameversion_set.all()
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = GameVersionSerializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
         serializer = GameVersionSerializer(queryset, many=True)
         return Response(serializer.data)
 
