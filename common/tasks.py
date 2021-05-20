@@ -1,11 +1,26 @@
 import os
 
 from celery import Celery
+from celery.schedules import crontab
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.local')
 app = Celery('tasks', broker=os.getenv('CELERY_BROKER_HOST', 'pyamqp://guest@localhost//'))
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
+
+app.conf.beat_schedule = {
+    'stopping-empty-servers': {
+        'task': 'common.tasks.check_servers',
+        'schedule': 15 * 60,
+    },
+}
+
+
+@app.task
+def check_servers():
+    """Check online on servers"""
+    from servers.helpers.checkers import check_minecraft_servers
+    check_minecraft_servers()
 
 
 @app.task

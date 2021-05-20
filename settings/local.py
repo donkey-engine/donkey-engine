@@ -37,3 +37,5 @@ BUILD_FILE_TEMPLATE = BUILD_FILE_DIRECTORY + '{filename}'
 REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += [  # type: ignore  # noqa: F405
     'rest_framework.renderers.BrowsableAPIRenderer',
 ]
+
+DOMAIN = os.getenv('DOMAIN', '0.0.0.0')
