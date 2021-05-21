@@ -27,8 +27,6 @@ class CreateServerSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Server.objects.create(
-            **{
-                'owner': self.context['request'].user,
-                **validated_data
-            },
+            owner=self.context['request'].user,
+            **validated_data
         )
