@@ -100,3 +100,17 @@ class ResendEmailConfirmationView(views.APIView):
 def logout_view(request: Request):
     logout(request)
     return JsonResponse({'status': 'ok'})
+
+
+def get_me(request: Request):
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'detail': 'Authentication credentials were not provided.',
+        }, status=status.HTTP_403_FORBIDDEN)
+
+    return JsonResponse({
+        'id': request.user.id,
+        'username': request.user.username,
+        'email_confirmed': request.user.profile.email_confirmed,
+        'session_expiry': int(request.session.get_expiry_date().timestamp()),
+    })

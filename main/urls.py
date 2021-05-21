@@ -17,6 +17,7 @@ router.register(r'api/servers', servers_views.ServersViewSet, basename='servers'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/me/', account_views.get_me),
     path('api/auth/', account_views.AuthApiView.as_view()),
     path('api/signup/', account_views.SignupApiView.as_view()),
     path('api/resend_email_confirmation/', account_views.ResendEmailConfirmationView.as_view()),
