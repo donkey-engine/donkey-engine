@@ -11,7 +11,13 @@ class ServerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Server
-        fields = ['id', 'game', 'version', 'status', 'port']
+        fields = ['id', 'name', 'game', 'version', 'status', 'port']
+
+
+class UpdateServerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Server
+        fields = ['name']
 
 
 class CreateServerSerializer(serializers.Serializer):
