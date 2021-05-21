@@ -46,6 +46,7 @@ class GameTestCase(TestCase):
             response.json(),
             [{
                 'id': self.server.id,
+                'name': 'New server',
                 'port': 0,
                 'status': 'CREATED',
                 'game': {
@@ -83,6 +84,7 @@ class GameTestCase(TestCase):
         response = c.post(
             '/api/servers/',
             {
+                'name': 'custom name',
                 'game_id': self.game.id,
                 'version_id': self.version.id,
             },
@@ -94,6 +96,7 @@ class GameTestCase(TestCase):
             response.json(),
             {
                 'id': last_server.id,  # type: ignore
+                'name': 'custom name',
                 'game': {
                     'id': self.game.id,
                     'name': self.game.name,

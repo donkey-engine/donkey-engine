@@ -21,12 +21,14 @@ class UpdateServerSerializer(serializers.ModelSerializer):
 
 
 class CreateServerSerializer(serializers.Serializer):
+    name = serializers.CharField(write_only=True, required=False)
     game_id = serializers.IntegerField(write_only=True)
     version_id = serializers.IntegerField(write_only=True)
 
     def create(self, validated_data):
         return Server.objects.create(
-            game_id=validated_data.get('game_id'),
-            version_id=validated_data.get('version_id'),
-            owner=self.context['request'].user,
+            **{
+                'owner': self.context['request'].user,
+                **validated_data
+            },
         )
