@@ -130,3 +130,4 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 
 DOMAIN = 'donkey-engine.host'
+LOGIN_PAGE = 'https://donkey-engine.host/login'

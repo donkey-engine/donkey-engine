@@ -1,13 +1,17 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.http import JsonResponse
-from rest_framework import exceptions, generics, status, views
+from django.http.request import HttpRequest
+from django.shortcuts import redirect
+from rest_framework import exceptions, generics, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
 
 from accounts.helpers.email import send_email_confirmation
 from accounts.serializers import (AuthSerializer, ConfirmEmailSerializer,
-                                  SignupSerializer)
+                                  ResendEmailSerializer, SignupSerializer)
 
 
 class AuthApiView(generics.GenericAPIView):
@@ -58,45 +62,42 @@ class SignupApiView(generics.GenericAPIView):
                 username=validated_data['username'],
                 password=validated_data['password'],
                 email=validated_data['email'],
+                is_active=False,
             )
             return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
 
 
-class ConfirmEmailView(generics.GenericAPIView):
-    serializer_class = ConfirmEmailSerializer
-
-    def post(self, request: Request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        validated_data = serializer.validated_data
-
-        user = self.request.user
-
-        pass_gen = PasswordResetTokenGenerator()
-        if not pass_gen.check_token(user=user, token=validated_data['token']):
-            raise exceptions.PermissionDenied()
-        user.profile.email_confirmed = True
-        user.profile.save()
-        return JsonResponse({'status': 'ok'})
-
-
-class ResendEmailConfirmationView(views.APIView):
-    def post(self, request: Request):
-        user = self.request.user
-
-        if user.profile.email_confirmed:
-            return JsonResponse({
-                'error': 'Email already confirmed',
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-        send_email_confirmation(user)
-
-        return JsonResponse({
-            'status': 'ok',
-            'email': user.email,
-        })
-
-
-def logout_view(request: Request):
+def logout_view(request: HttpRequest):
     logout(request)
     return JsonResponse({'status': 'ok'})
+
+
+@api_view(['GET'])
+@permission_classes([])
+def resend_email_confirmation_view(request: Request):
+    serializer = ResendEmailSerializer(data=request.GET)
+    serializer.is_valid(raise_exception=True)
+    user = serializer.validated_data['username']
+
+    if user.is_active:
+        raise exceptions.ValidationError({'error': 'Email already confirmed'})
+
+    send_email_confirmation(user)
+
+    return JsonResponse({'status': 'ok'})
+
+
+@api_view(['GET'])
+@permission_classes([])
+def confirm_email_view(request: Request):
+    serializer = ConfirmEmailSerializer(data=request.GET)
+    serializer.is_valid(raise_exception=True)
+    token = serializer.validated_data['token']
+
+    user = serializer.validated_data['username']
+    pass_gen = PasswordResetTokenGenerator()
+    if not pass_gen.check_token(user=user, token=token):
+        raise exceptions.PermissionDenied()
+    user.is_active = True
+    user.save()
+    return redirect(settings.LOGIN_PAGE)

@@ -39,3 +39,4 @@ REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += [  # type: ignore  # noqa: F405
 ]
 
 DOMAIN = os.getenv('DOMAIN', '0.0.0.0')
+LOGIN_PAGE = os.getenv('LOGIN_PAGE', 'http://0.0.0.0:8000/signup')

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
@@ -15,3 +16,12 @@ class SignupSerializer(serializers.Serializer):
 
 class ConfirmEmailSerializer(serializers.Serializer):
     token = serializers.CharField()
+    username = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field='username')
+
+
+class ResendEmailSerializer(serializers.Serializer):
+    username = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field='username')

@@ -8,7 +8,6 @@ from accounts.helpers.email import send_email_confirmation
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email_confirmed = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return f'{self.user} profile'
