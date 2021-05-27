@@ -1,8 +1,6 @@
 from rest_framework import exceptions, viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
 
-from games.models import Game, GameVersion, Mod
+from games.models import Game, GameVersion
 from games.serializers import (GameSerializer, GameVersionSerializer,
                                ModSerializer)
 
@@ -19,7 +17,6 @@ class GameVersionsViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         gameid = self.kwargs.get('game_id')
         return GameVersion.objects.filter(game=gameid)
-    
 
 
 class GameModViewSet(viewsets.ReadOnlyModelViewSet):

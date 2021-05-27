@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from games.serializers import GameSerializer, GameVersionSerializer
+from games.serializers import (GameSerializer, GameVersionSerializer,
+                               ModSerializer)
 from servers.models import Server
 
 
@@ -8,10 +9,11 @@ class ServerSerializer(serializers.ModelSerializer):
     """Serializer for Game"""
     game = GameSerializer()
     version = GameVersionSerializer()
+    mods = ModSerializer(many=True)
 
     class Meta:
         model = Server
-        fields = ['id', 'name', 'game', 'version', 'status', 'port']
+        fields = ['id', 'name', 'game', 'version', 'status', 'port', 'mods']
 
 
 class UpdateServerSerializer(serializers.ModelSerializer):

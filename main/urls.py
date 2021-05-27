@@ -10,8 +10,16 @@ from games import views as games_views
 from servers import views as servers_views
 
 router = routers.DefaultRouter()
-router.register(r'api/games/(?P<game_id>.+)/versions/(?P<version_id>.+)/mods', games_views.GameModViewSet, basename='mods')
-router.register(r'api/games/(?P<game_id>.+)/versions', games_views.GameVersionsViewSet, basename='versions')
+router.register(
+    r'api/games/(?P<game_id>.+)/versions/(?P<version_id>.+)/mods',
+    games_views.GameModViewSet,
+    basename='mods',
+)
+router.register(
+    r'api/games/(?P<game_id>.+)/versions',
+    games_views.GameVersionsViewSet,
+    basename='versions',
+)
 router.register(r'api/games', games_views.GameViewSet, basename='games')
 router.register(r'api/servers', servers_views.ServersViewSet, basename='servers')
 
