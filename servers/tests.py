@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
 from games.models import Game, GameVersion
-from servers.models import Server
+from servers.models import Server, Mod
 
 
 class GameTestCase(TestCase):
@@ -56,7 +56,8 @@ class GameTestCase(TestCase):
                 'version': {
                     'id': self.version.id,
                     'version': self.version.version,
-                }
+                },
+                'mods': [],
             }]
         )
 
@@ -84,13 +85,70 @@ class GameTestCase(TestCase):
         response = c.post(
             '/api/servers/',
             {
-                'name': 'custom name',
                 'game_id': self.game.id,
                 'version_id': self.version.id,
             },
             content_type='application/json',
         )
+        last_server = Server.objects.last()
+        self.assertEqual(
+            response.json(),
+            {
+                'id': last_server.id,  # type: ignore
+                'name': 'New server',
+                'game': {
+                    'id': self.game.id,
+                    'name': self.game.name,
+                },
+                'version': {
+                    'id': self.version.id,
+                    'version': self.version.version,
+                },
+                'mods': [],
+                'port': 0,
+                'status': 'CREATED',
+            }
+        )
         self.assertEqual(response.status_code, 201)
+
+
+    def test_create_server_with_mods(self):
+        c = Client()
+
+        response = c.post(
+            '/api/servers/',
+            {
+                'game_id': self.game.id,
+                'version_id': self.version.id,
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json(),
+            {
+                'detail': 'Authentication credentials were not provided.',
+            }
+        )
+
+        c.login(username='username', password='password')
+
+        mod = Mod.objects.create(
+            name='Test Mod',
+            mod='file/pa.th.jar',
+        )
+        mod.versions.set([self.version])
+        mod.save()
+        response = c.post(
+            '/api/servers/',
+            {
+                'name': 'custom name',
+                'game_id': self.game.id,
+                'version_id': self.version.id,
+                'mods': [mod.id],
+            },
+            content_type='application/json',
+        )
         last_server = Server.objects.last()
         self.assertEqual(
             response.json(),
@@ -105,10 +163,13 @@ class GameTestCase(TestCase):
                     'id': self.version.id,
                     'version': self.version.version,
                 },
+                'mods': [{'id': mod.id, 'name': mod.name}],
                 'port': 0,
                 'status': 'CREATED',
             }
         )
+        self.assertEqual(response.status_code, 201)
+
 
     def test_build_endpoint(self):
         c = Client()

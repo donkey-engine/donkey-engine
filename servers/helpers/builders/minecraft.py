@@ -23,12 +23,12 @@ class MinecraftBuilder(BaseBuilder):
                 'func': self._create_eula,
             },
             {
-                'name': 'Configurating',
-                'func': self._init_server_properties,
-            },
-            {
                 'name': 'Install plugins',
                 'func': self._instal_plugins,
+            },
+            {
+                'name': 'Configurating',
+                'func': self._init_server_properties,
             },
         ]
 
