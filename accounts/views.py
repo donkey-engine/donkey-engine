@@ -27,9 +27,22 @@ class AuthApiView(generics.GenericAPIView):
             password=serializer.validated_data['password'],
         )
         if not user:
-            return JsonResponse({
-                'error': ['Bad credentials']
-            }, status=status.HTTP_403_FORBIDDEN)
+            try:
+                user = User.objects.get(username=serializer.validated_data['username'])
+            except User.DoesNotExist:
+                return JsonResponse({
+                    'error': ['Bad credentials']
+                }, status=status.HTTP_403_FORBIDDEN)
+            else:
+                if user.is_active is False:
+                    return JsonResponse({
+                        'error': ['User is inactive']
+                    }, status=status.HTTP_403_FORBIDDEN)
+                else:
+                    return JsonResponse({
+                        'error': ['Bad credentials']
+                    }, status=status.HTTP_403_FORBIDDEN)
+
         else:
             login(request, user)
             return JsonResponse({

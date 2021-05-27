@@ -5,8 +5,8 @@ from django.core.mail import send_mail
 
 EMAIL_TEMPLATE = """<h1>Пожалуйста, подтвердите свой email для учетной записи Donkey Engine</h1>
 <p>Пожалуйста, перейдите по ссылке, чтобы подтвердить свою учетную запись:</p>
-<a href="http://0.0.0.0:8002/api/confirm_email/?token={token}&username={username}">
-http://0.0.0.0:8002/api/confirm_email/?token={token}&username={username}
+<a href="{host_name}/api/confirm_email/?token={token}&username={username}">
+{host_name}/api/confirm_email/?token={token}&username={username}
 </a>"""  # noqa: E501
 
 
@@ -20,6 +20,8 @@ def send_email_confirmation(user: User):
             [user.email],
             fail_silently=False,
             html_message=EMAIL_TEMPLATE.format(
-                token=token, username=user.username,
+                token=token,
+                username=user.username,
+                host_name=settings.HOST_NAME,
             ),
         )
