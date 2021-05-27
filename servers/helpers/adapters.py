@@ -13,7 +13,19 @@ logger = logging.getLogger(__name__)
 RUNNER = 'RUNNER'
 BUILDER = 'BUILDER'
 ALLOWED_GAMES = {
-    'Minecraft: Java Edition': {
+    'Minecraft: Java Edition': {  # TODO Remove it
+        RUNNER: MinecraftRunner,
+        BUILDER: MinecraftBuilder,
+    },
+    'Minecraft: Java Edition (Vanilla)': {
+        RUNNER: MinecraftRunner,
+        BUILDER: MinecraftBuilder,
+    },
+    'Minecraft: Java Edition (Craftbukkit)': {
+        RUNNER: MinecraftRunner,
+        BUILDER: MinecraftBuilder,
+    },
+    'Minecraft: Java Edition (Spigot)': {
         RUNNER: MinecraftRunner,
         BUILDER: MinecraftBuilder,
     },
