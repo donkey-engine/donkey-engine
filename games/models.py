@@ -3,7 +3,12 @@ from django.db import models
 
 class Game(models.Model):
     name = models.CharField(max_length=64, blank=False, null=False, unique=True)
-    build_key = models.CharField(max_length=32, blank=False, null=False, default='Minecraft: Java Edition')
+    build_key = models.CharField(
+        max_length=32,
+        blank=False,
+        null=False,
+        default='Minecraft: Java Edition',
+    )
 
     def __str__(self):
         return self.name
