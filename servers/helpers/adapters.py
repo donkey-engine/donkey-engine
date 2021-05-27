@@ -53,6 +53,13 @@ def run_server(server_id: int) -> None:
     except Server.DoesNotExist as exc:
         logger.exception(exc)
         raise exceptions.BaseError() from exc
+
+    other_user_servers = Server.objects.filter(owner=server.owner, status='RUNNING')
+    for user_server in other_user_servers:    
+        runner_class = get_runner(server.game.build_key)
+        runner = runner_class(user_server.id)
+        runner.stop()
+
     runner_class = get_runner(server.game.build_key)
     runner = runner_class(server_id)
     runner.run()
