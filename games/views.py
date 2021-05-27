@@ -1,8 +1,6 @@
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
+from rest_framework import exceptions, viewsets
 
-from games.models import Game, Mod
+from games.models import Game, GameVersion
 from games.serializers import (GameSerializer, GameVersionSerializer,
                                ModSerializer)
 
@@ -12,17 +10,22 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
 
-    @action(detail=True)
-    def versions(self, request, pk):
-        game = self.get_object()
-        queryset = game.gameversion_set.all()
-        serializer = GameVersionSerializer(queryset, many=True)
-        return Response(serializer.data)
+
+class GameVersionsViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = GameVersionSerializer
+
+    def get_queryset(self):
+        gameid = self.kwargs.get('game_id')
+        return GameVersion.objects.filter(game=gameid)
 
 
 class GameModViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ModSerializer
 
     def get_queryset(self):
+        versionid = self.kwargs.get('version_id')
         gameid = self.kwargs.get('game_id')
-        return Mod.objects.filter(game_id=gameid)
+        try:
+            return GameVersion.objects.get(id=versionid, game=gameid).mods
+        except GameVersion.DoesNotExist:
+            raise exceptions.NotFound()
