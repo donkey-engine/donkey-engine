@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
-from games.models import Game, GameVersion
-from servers.models import Server, Mod
+from games.models import Game, GameVersion, Mod
+from servers.models import Server
 
 
 class GameTestCase(TestCase):
@@ -111,7 +111,6 @@ class GameTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 201)
 
-
     def test_create_server_with_mods(self):
         c = Client()
 
@@ -169,7 +168,6 @@ class GameTestCase(TestCase):
             }
         )
         self.assertEqual(response.status_code, 201)
-
 
     def test_build_endpoint(self):
         c = Client()
