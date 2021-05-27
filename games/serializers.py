@@ -21,4 +21,4 @@ class ModSerializer(serializers.ModelSerializer):
     """Serializer for Mods"""
     class Meta:
         model = Mod
-        fields = ['id', 'name', 'game']
+        fields = ['id', 'name']

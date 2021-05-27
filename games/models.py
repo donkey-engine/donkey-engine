@@ -31,27 +31,13 @@ class GameVersion(models.Model):
 
 class Mod(models.Model):
     name = models.CharField(max_length=64, blank=False, null=False)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    mod = models.FileField(max_length=512, null=False)
+    versions = models.ManyToManyField(GameVersion, related_name='mods')
 
     def __str__(self):
-        return f'{self.name}:{self.game}'
+        return f'{self.name}:({self.versions})'
 
     class Meta:
         verbose_name_plural = 'Mods'
         verbose_name = 'Mod'
         ordering = ('name',)
-        unique_together = (('name', 'game'))
-
-
-class ModVersion(models.Model):
-    version = models.ForeignKey(GameVersion, on_delete=models.CASCADE)
-    mod = models.ForeignKey(Mod, on_delete=models.CASCADE)
-    filepath = models.FileField(max_length=512, null=False)
-
-    def __str__(self):
-        return f'{self.mod}:{self.version}'
-
-    class Meta:
-        verbose_name_plural = 'Mod versions'
-        verbose_name = 'Mod version'
-        unique_together = (('version', 'mod'))

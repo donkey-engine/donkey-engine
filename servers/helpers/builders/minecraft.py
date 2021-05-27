@@ -25,7 +25,11 @@ class MinecraftBuilder(BaseBuilder):
             {
                 'name': 'Configurating',
                 'func': self._init_server_properties,
-            }
+            },
+            {
+                'name': 'Install plugins',
+                'func': self._instal_plugins,
+            },
         ]
 
     def _download_server(self) -> None:
@@ -91,3 +95,7 @@ prevent-proxy-connections=false
 use-native-transport=true
 motd=Donkey Engine server
 enable-rcon=false''')
+
+    def _instal_plugins(self):
+        for mod in self.server.mods.all():
+            pass
