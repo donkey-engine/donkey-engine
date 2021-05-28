@@ -28,8 +28,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', account_views.AuthApiView.as_view()),
     path('api/signup/', account_views.SignupApiView.as_view()),
-    path('api/resend_email_confirmation/', account_views.ResendEmailConfirmationView.as_view()),
-    path('api/confirm_email/', account_views.ConfirmEmailView.as_view()),
+    path('api/resend_email_confirmation/', account_views.resend_email_confirmation_view),
+    path('api/confirm_email/', account_views.confirm_email_view),
     path('api/logout/', account_views.logout_view),
 ]
 

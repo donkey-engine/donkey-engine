@@ -3,9 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 
-EMAIL_TEMPLATE = """<h1>Please confirm your email for Donkey Engine account</h1>
-<p>Please follow the link to verify your account:</p>
-<a href="https://donkey-engine.host/confirm_email/{token}">https://donkey-engine.host/confirm_email/{token}</a>"""  # noqa: E501
+EMAIL_TEMPLATE = """<h1>Пожалуйста, подтвердите свой email для учетной записи Donkey Engine</h1>
+<p>Пожалуйста, перейдите по ссылке, чтобы подтвердить свою учетную запись:</p>
+<a href="{host_name}/api/confirm_email/?token={token}&username={username}">
+{host_name}/api/confirm_email/?token={token}&username={username}
+</a>"""  # noqa: E501
 
 
 def send_email_confirmation(user: User):
@@ -19,5 +21,7 @@ def send_email_confirmation(user: User):
             fail_silently=False,
             html_message=EMAIL_TEMPLATE.format(
                 token=token,
+                username=user.username,
+                host_name=settings.HOST_NAME,
             ),
         )
