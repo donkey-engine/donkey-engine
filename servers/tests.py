@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
-from games.models import Game, GameVersion, Mod
+from games.models import Game, GameVersion, Mod, ModVersion
 from servers.models import Server
 
 
@@ -134,10 +134,14 @@ class GameTestCase(TestCase):
 
         mod = Mod.objects.create(
             name='Test Mod',
-            mod='file/pa.th.jar',
         )
-        mod.versions.set([self.version])
-        mod.save()
+        mod_version = ModVersion.objects.create(
+            name='1.0.0',
+            mod=mod,
+            filepath='file/pa.th.jar',
+        )
+        mod_version.versions.set([self.version])
+        mod_version.save()
         response = c.post(
             '/api/servers/',
             {
@@ -162,7 +166,16 @@ class GameTestCase(TestCase):
                     'id': self.version.id,
                     'version': self.version.version,
                 },
-                'mods': [{'id': mod.id, 'name': mod.name}],
+                'mods': [
+                    {
+                        'id': mod_version.id,
+                        'name': mod_version.name,
+                        'mod': {
+                            'id': mod.id,
+                            'name': mod.name,
+                        }
+                    },
+                ],
                 'port': 0,
                 'status': 'CREATED',
             }

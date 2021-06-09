@@ -99,7 +99,7 @@ enable-rcon=false''')
     def _instal_plugins(self):
         for mod in self.server.mods.all():
             try:
-                file_content = storage.read(mod.mod.path)
+                file_content = storage.read(mod.filepath.path)
             except FileNotFoundError:
-                raise BuilderNotFound(f'"{mod.mod.path}" not found')
-            self.files[f'plugins/{mod.name}.jar'] = BytesIO(file_content)
+                raise BuilderNotFound(f'"{mod.filepath.path}" not found')
+            self.files[f'plugins/{mod.mod.name}__{mod.name}.jar'] = BytesIO(file_content)
