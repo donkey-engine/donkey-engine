@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from games.models import Game, GameVersion, Mod
+from games.models import Game, GameVersion, Mod, ModVersion
 
 
 class VersionsInline(admin.TabularInline):  # type: ignore
@@ -15,10 +15,17 @@ class GameAdmin(admin.ModelAdmin):  # type: ignore
     inlines = (VersionsInline,)
 
 
+class ModVersionInline(admin.TabularInline):  # type: ignore
+    model = ModVersion
+    extra = 1
+
+
 class ModAdmin(admin.ModelAdmin):  # type: ignore
     """Change name mods in admin panel"""
     list_display = ('name',)
     list_filter = ('name',)
+
+    inlines = (ModVersionInline,)
 
 
 admin.site.register(Game, GameAdmin)

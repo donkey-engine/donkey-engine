@@ -2,7 +2,7 @@ from rest_framework import exceptions, viewsets
 
 from games.models import Game, GameVersion
 from games.serializers import (GameSerializer, GameVersionSerializer,
-                               ModSerializer)
+                               ModVersionsSerializer)
 
 
 class GameViewSet(viewsets.ReadOnlyModelViewSet):
@@ -20,7 +20,7 @@ class GameVersionsViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class GameModViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = ModSerializer
+    serializer_class = ModVersionsSerializer
 
     def get_queryset(self):
         versionid = self.kwargs.get('version_id')
