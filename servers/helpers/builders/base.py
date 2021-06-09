@@ -17,9 +17,9 @@ class BuildStage(t.TypedDict):
 
 
 class BaseBuilder:
-    files: t.Dict[str, t.Union[BytesIO, StringIO]] = {}
-
     def __init__(self, server: Server):
+        self.files: t.Dict[str, t.Union[BytesIO, StringIO]] = {}
+
         self.server = server
         self.build_instance = ServerBuild.objects.create(
             server=self.server,
