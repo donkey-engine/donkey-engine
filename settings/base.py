@@ -112,6 +112,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 STATIC_ROOT = os.getenv('STATIC_ROOT', '/app/donkeyengine/static/')
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', '/app/donkeyengine/media/')
 
