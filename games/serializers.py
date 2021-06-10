@@ -5,7 +5,7 @@ from games.models import Game, GameVersion, Mod, ModVersion
 
 class GameSerializer(serializers.ModelSerializer):
     """Serializer for Game"""
-    
+
     class Meta:
         model = Game
         fields = ['id', 'name', 'icon', 'description']
