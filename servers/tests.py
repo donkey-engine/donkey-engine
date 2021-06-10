@@ -52,6 +52,8 @@ class GameTestCase(TestCase):
                 'game': {
                     'id': self.game.id,
                     'name': self.game.name,
+                    'icon': None,
+                    'description': '',
                 },
                 'version': {
                     'id': self.version.id,
@@ -99,6 +101,8 @@ class GameTestCase(TestCase):
                 'game': {
                     'id': self.game.id,
                     'name': self.game.name,
+                    'icon': None,
+                    'description': '',
                 },
                 'version': {
                     'id': self.version.id,
@@ -161,6 +165,8 @@ class GameTestCase(TestCase):
                 'game': {
                     'id': self.game.id,
                     'name': self.game.name,
+                    'icon': None,
+                    'description': '',
                 },
                 'version': {
                     'id': self.version.id,
@@ -173,6 +179,8 @@ class GameTestCase(TestCase):
                         'mod': {
                             'id': mod.id,
                             'name': mod.name,
+                            'icon': None,
+                            'description': '',
                         }
                     },
                 ],
