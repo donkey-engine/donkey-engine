@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/signup/', account_views.SignupApiView.as_view()),
     path('api/resend_email_confirmation/', account_views.resend_email_confirmation_view),
     path('api/confirm_email/', account_views.confirm_email_view),
+    path('api/games/<int:game_id>/config/', games_views.GameConfiguratorView.as_view()),
     path('api/logout/', account_views.logout_view),
 ]
 

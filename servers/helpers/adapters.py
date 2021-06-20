@@ -4,6 +4,8 @@ import typing as t
 from servers.helpers import exceptions
 from servers.helpers.builders.base import BaseBuilder
 from servers.helpers.builders.minecraft import MinecraftBuilder
+from servers.helpers.configurator.base import BaseConfigurator
+from servers.helpers.configurator.minecraft import MinecraftConfigurator
 from servers.helpers.runners.base import BaseRunner
 from servers.helpers.runners.minecraft import MinecraftRunner
 from servers.models import Server
@@ -12,10 +14,12 @@ logger = logging.getLogger(__name__)
 
 RUNNER = 'RUNNER'
 BUILDER = 'BUILDER'
+CONFIGURATOR = 'CONFIGURATOR'
 ALLOWED_GAMES = {
     'Minecraft: Java Edition': {
         RUNNER: MinecraftRunner,
         BUILDER: MinecraftBuilder,
+        CONFIGURATOR: MinecraftConfigurator,
     },
 }
 
@@ -26,6 +30,14 @@ def get_builder(build_key: str) -> t.Type[BaseBuilder]:
     except KeyError as exc:
         logger.exception(exc)
         raise exceptions.BuilderNotFound() from exc
+
+
+def get_configurator(build_key: str) -> t.Type[BaseConfigurator]:
+    try:
+        return ALLOWED_GAMES[build_key][CONFIGURATOR]
+    except KeyError as exc:
+        logger.exception(exc)
+        raise exceptions.ConfiguratorNotFound() from exc
 
 
 def get_runner(build_key: str) -> t.Type[BaseRunner]:
