@@ -60,6 +60,16 @@ class GameTestCase(TestCase):
                     'version': self.version.version,
                 },
                 'mods': [],
+                'config': {
+                    'difficulty': 'easy',
+                    'gamemode': 'survival',
+                    'level-type': 'default',
+                    'op-permission-level': 4,
+                    'player-idle-timeout': 0,
+                    'pvp': True,
+                    'spawn-monsters': True,
+                    'spawn-protection': 16
+                },
             }]
         )
 
@@ -89,6 +99,7 @@ class GameTestCase(TestCase):
             {
                 'game_id': self.game.id,
                 'version_id': self.version.id,
+                'config': {},
             },
             content_type='application/json',
         )
@@ -109,6 +120,16 @@ class GameTestCase(TestCase):
                     'version': self.version.version,
                 },
                 'mods': [],
+                'config': {
+                    'difficulty': 'easy',
+                    'gamemode': 'survival',
+                    'level-type': 'default',
+                    'op-permission-level': 4,
+                    'player-idle-timeout': 0,
+                    'pvp': True,
+                    'spawn-monsters': True,
+                    'spawn-protection': 16
+                },
                 'port': 0,
                 'status': 'CREATED',
             }
@@ -153,6 +174,7 @@ class GameTestCase(TestCase):
                 'game_id': self.game.id,
                 'version_id': self.version.id,
                 'mods': [mod.id],
+                'config': {},
             },
             content_type='application/json',
         )
@@ -184,6 +206,16 @@ class GameTestCase(TestCase):
                         }
                     },
                 ],
+                'config': {
+                    'difficulty': 'easy',
+                    'gamemode': 'survival',
+                    'level-type': 'default',
+                    'op-permission-level': 4,
+                    'player-idle-timeout': 0,
+                    'pvp': True,
+                    'spawn-monsters': True,
+                    'spawn-protection': 16
+                },
                 'port': 0,
                 'status': 'CREATED',
             }

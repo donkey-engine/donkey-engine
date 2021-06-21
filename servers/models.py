@@ -24,6 +24,7 @@ class Server(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(max_length=32, choices=SERVER_STATUSES, default='CREATED')
     port = models.IntegerField(null=False, default=0)
+    config = models.JSONField(default=dict)  # type: ignore
 
     def save(self, *args, **kwargs):
         if self.game != self.version.game:

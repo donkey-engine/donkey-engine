@@ -32,17 +32,26 @@ class BaseField:
         }
 
     def validate(self, value: t.Any):
-        if not self.config['editable'] and value != self.config['default']:
+        if (
+            not self.config['editable']
+            and value is not None
+            and value != self.config['default']
+        ):
             raise exceptions.ConfigurationValidationError(
-                f"Этот параметр нельзя редактировать"
+                "Этот параметр нельзя редактировать"
             )
-        if self.config['required'] and value is None:
+        if (
+            self.config['required']
+            and value is None
+            and self.config['default'] is None
+        ):
             raise exceptions.ConfigurationValidationError(
-                f"Этот параметр обязательный"
+                "Этот параметр обязательный"
             )
         if value is None:
             return self.config['default']
         return value
+
 
 class BooleanField(BaseField):
     def __init__(
@@ -73,7 +82,6 @@ class BooleanField(BaseField):
         return value
 
 
-
 class TextField(BaseField):
     """Text input field."""
     def __init__(
@@ -99,11 +107,11 @@ class TextField(BaseField):
 
     def validate(self, value):
         value = super().validate(value)
-        if not isinstance(value, str):
+        if value is not None and not isinstance(value, str):
             raise exceptions.ConfigurationValidationError(
                 f"{value} должно быть строкой"
             )
-        if self.config['choices'] and value not in self.config['choices']:
+        if value is not None and self.config['choices'] and value not in self.config['choices']:
             raise exceptions.ConfigurationValidationError(
                 f"{value} должно быть из списка разрешенных значений"
             )
@@ -137,7 +145,7 @@ class NumberField(BaseField):
 
     def validate(self, value):
         value = super().validate(value)
-        if not isinstance(value, [int, float]):
+        if not isinstance(value, (int, float)):
             raise exceptions.ConfigurationValidationError(
                 f"{value} должно быть числом"
             )
