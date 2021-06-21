@@ -1,6 +1,7 @@
 # noqa: E501
 from servers.helpers.configurator.base import BaseConfigurator
-from servers.helpers.configurator.fields import BooleanField, TextField, NumberField
+from servers.helpers.configurator.fields import (BooleanField, NumberField,
+                                                 TextField)
 
 
 class MinecraftConfigurator(BaseConfigurator):

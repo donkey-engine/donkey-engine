@@ -1,11 +1,11 @@
-from rest_framework import serializers, exceptions
+from rest_framework import exceptions, serializers
 
+from games.models import Game
 from games.serializers import (GameSerializer, GameVersionSerializer,
                                ModVersionsSerializer)
-from games.models import Game
-from servers.models import Server
 from servers.helpers.adapters import get_configurator
 from servers.helpers.exceptions import ConfigurationValidationError
+from servers.models import Server
 
 
 class ServerSerializer(serializers.ModelSerializer):
