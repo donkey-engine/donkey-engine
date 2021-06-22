@@ -4,32 +4,40 @@ from servers.helpers.configurator.fields import BaseField
 from servers.helpers.exceptions import ConfigurationValidationError
 
 
+DictFields = t.Dict[str, t.Any]
+
+
 class BaseConfigurator:
     fields: t.Dict[str, BaseField] = {}
 
-    def api_representaion(self):
+    validated_data: DictFields = {}
+
+    @classmethod
+    def get_fields_representation(cls) -> DictFields:
+        """Return fields config without values."""
         result = {}
-        for name, field in self.fields.items():
+        for name, field in cls.fields.items():
             representation = field.api_representation()
             if not representation['config']['editable']:
                 continue
             result[name] = representation
         return result
 
-    def public_config(self, data: t.Dict[str, t.Any]):
-        result = {}
-        for key, field in self.fields.items():
-            if not field.config['editable']:
-                continue
-            result[key] = data.get(key, field.config['default'])
-        return result
-
-    def validate(self, data: t.Dict[str, t.Any]):
-        parsed_data = {}
-        for key, field in self.fields.items():
+    @classmethod
+    def parse(cls, data: DictFields):
+        """Parse API data."""
+        instance = cls()
+        instance.validated_data = {}
+        for key, field in cls.fields.items():
             try:
                 validated_value = field.validate(data.get(key))
             except ConfigurationValidationError as exc:
                 raise ConfigurationValidationError('{}: {}'.format(key, exc))
-            parsed_data[key] = validated_value
-        return parsed_data
+            instance.validated_data[key] = validated_value
+        return instance
+
+    def exclude(self, key: str, equal=True):
+        """Mutate `.validated_data` and exclude true values of `key`."""
+        for field_key, field in self.fields.items():
+            if field.config[key] == equal:
+                del self.validated_data[field_key]

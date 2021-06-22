@@ -16,8 +16,9 @@ class ServerSerializer(serializers.ModelSerializer):
     config = serializers.SerializerMethodField(method_name='get_config')
 
     def get_config(self, obj):
-        configurator = get_configurator(obj.game.build_key)
-        return configurator().public_config(obj.config)
+        configurator = get_configurator(obj.game.build_key).parse(obj.config)
+        configurator.exclude('editable', False)
+        return configurator.validated_data
 
     class Meta:
         model = Server
@@ -50,12 +51,11 @@ class CreateServerSerializer(serializers.Serializer):
 
     def validate_config(self, value):
         game = Game.objects.get(id=self.initial_data['game_id'])
-        configurator = get_configurator(game.build_key)
         try:
-            validated_value = configurator().validate(value)
+            configurator = get_configurator(game.build_key).parse(value)
         except ConfigurationValidationError as exc:
             raise exceptions.ValidationError(exc)
-        return validated_value
+        return configurator.validated_data
 
     def create(self, validated_data):
         server = Server.objects.create(

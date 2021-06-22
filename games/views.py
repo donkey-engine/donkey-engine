@@ -34,7 +34,7 @@ class GameConfiguratorView(views.APIView):
 
         configurator = get_configurator(game.build_key)
 
-        return Response(configurator().api_representaion())
+        return Response(configurator.get_fields_representation())
 
 
 class GameModViewSet(viewsets.ReadOnlyModelViewSet):
