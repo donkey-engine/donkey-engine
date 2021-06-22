@@ -53,7 +53,8 @@ CMD ["java","-Xmx1024M","-Xms1024M","-jar","server.jar","nogui"]''')
         configurator = MinecraftConfigurator.parse(self.server.config)
 
         date_now = datetime.now().strftime('%a %b %d %H:%M:%S MSK %Y')
-        config_text = f"#{date_now}\n"
+        config_text = '#Minecraft server properties\n'
+        config_text += f"#{date_now}\n"
 
         for key, value in configurator.validated_data.items():
             text_value = ''
