@@ -145,16 +145,17 @@ class NumberField(BaseField):
 
     def validate(self, value):
         value = super().validate(value)
-        if not isinstance(value, (int, float)):
-            raise exceptions.ConfigurationValidationError(
-                f"{value} должно быть числом"
-            )
-        if self.config['min_value'] is not None and value < self.config['min_value']:
-            raise exceptions.ConfigurationValidationError(
-                f"{value} меньше чем {self.config['min_value']}"
-            )
-        if self.config['max_value'] is not None and value > self.config['max_value']:
-            raise exceptions.ConfigurationValidationError(
-                f"{value} больше чем {self.config['max_value']}"
-            )
+        if value is not None:
+            if not isinstance(value, (int, float)):
+                raise exceptions.ConfigurationValidationError(
+                    f"{value} должно быть числом"
+                )
+            if self.config['min_value'] is not None and value < self.config['min_value']:
+                raise exceptions.ConfigurationValidationError(
+                    f"{value} меньше чем {self.config['min_value']}"
+                )
+            if self.config['max_value'] is not None and value > self.config['max_value']:
+                raise exceptions.ConfigurationValidationError(
+                    f"{value} больше чем {self.config['max_value']}"
+                )
         return value
