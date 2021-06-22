@@ -3,8 +3,8 @@ from datetime import datetime
 from io import BytesIO, StringIO
 
 from common.storage import storage
-from servers.helpers.exceptions import BuilderNotFound
 from servers.helpers.configurator.minecraft import MinecraftConfigurator
+from servers.helpers.exceptions import BuilderNotFound
 
 from .base import BaseBuilder, BuildStage
 
@@ -61,7 +61,7 @@ CMD ["java","-Xmx1024M","-Xms1024M","-jar","server.jar","nogui"]''')
                 text_value = str(value)
             elif isinstance(value, bool):
                 text_value = 'true' if value else 'false'
-            config_text += f'{key}={value}\n'
+            config_text += f'{key}={text_value}\n'
 
         self.files['server.properties'] = StringIO(config_text)
 

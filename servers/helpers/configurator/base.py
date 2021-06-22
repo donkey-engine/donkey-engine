@@ -3,7 +3,6 @@ import typing as t
 from servers.helpers.configurator.fields import BaseField
 from servers.helpers.exceptions import ConfigurationValidationError
 
-
 DictFields = t.Dict[str, t.Any]
 
 
