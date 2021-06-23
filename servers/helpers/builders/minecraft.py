@@ -1,7 +1,9 @@
 import typing as t
+from datetime import datetime
 from io import BytesIO, StringIO
 
 from common.storage import storage
+from servers.helpers.configurator.minecraft import MinecraftConfigurator
 from servers.helpers.exceptions import BuilderNotFound
 
 from .base import BaseBuilder, BuildStage
@@ -48,53 +50,21 @@ CMD ["java","-Xmx1024M","-Xms1024M","-jar","server.jar","nogui"]''')
         self.files['eula.txt'] = StringIO('eula=TRUE')
 
     def _init_server_properties(self) -> None:
-        self.files['server.properties'] = StringIO('''#Minecraft server properties
-#Thu Jul 07 16:45:52 MSK 2016
-spawn-protection=16
-max-tick-time=-1
-query.port=25565
-generator-settings=
-sync-chunk-writes=true
-force-gamemode=false
-allow-nether=true
-enforce-whitelist=false
-gamemode=survival
-broadcast-console-to-ops=true
-enable-query=false
-player-idle-timeout=10
-difficulty=easy
-broadcast-rcon-to-ops=true
-spawn-monsters=true
-op-permission-level=4
-pvp=true
-snooper-enabled=false
-level-type=default
-hardcore=false
-enable-command-block=false
-network-compression-threshold=256
-max-players=3
-max-world-size=15000
-resource-pack-sha1=
-function-permission-level=2
-rcon.port=25575
-server-port=25565
-server-ip=
-spawn-npcs=true
-allow-flight=false
-level-name=world
-view-distance=10
-resource-pack=
-spawn-animals=true
-white-list=false
-rcon.password=verySecretPassword
-generate-structures=true
-online-mode=false
-max-build-height=256
-level-seed=
-prevent-proxy-connections=false
-use-native-transport=true
-motd=Donkey Engine server
-enable-rcon=false''')
+        configurator = MinecraftConfigurator.parse(self.server.config)
+
+        date_now = datetime.now().strftime('%a %b %d %H:%M:%S MSK %Y')
+        config_text = '#Minecraft server properties\n'
+        config_text += f"#{date_now}\n"
+
+        for key, value in configurator.validated_data.items():
+            text_value = ''
+            if isinstance(value, (str, int, float)):
+                text_value = str(value)
+            elif isinstance(value, bool):
+                text_value = 'true' if value else 'false'
+            config_text += f'{key}={text_value}\n'
+
+        self.files['server.properties'] = StringIO(config_text)
 
     def _instal_plugins(self):
         for mod in self.server.mods.all():

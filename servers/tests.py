@@ -60,6 +60,26 @@ class GameTestCase(TestCase):
                     'version': self.version.version,
                 },
                 'mods': [],
+                'config': {
+                    'spawn-protection': 16,
+                    'gamemode': 'survival',
+                    'player-idle-timeout': 0,
+                    'difficulty': 'easy',
+                    'spawn-monsters': True,
+                    'op-permission-level': 4,
+                    'pvp': True,
+                    'level-type': 'default',
+                    'hardcore': False,
+                    'enable-command-block': False,
+                    'max-players': 3,
+                    'max-world-size': 15000,
+                    'spawn-npcs': True,
+                    'allow-flight': True,
+                    'spawn-animals': True,
+                    'generate-structures': True,
+                    'level-seed': None,
+                    'motd': 'Donkey Engine server'
+                },
             }]
         )
 
@@ -89,6 +109,7 @@ class GameTestCase(TestCase):
             {
                 'game_id': self.game.id,
                 'version_id': self.version.id,
+                'config': {},
             },
             content_type='application/json',
         )
@@ -109,6 +130,26 @@ class GameTestCase(TestCase):
                     'version': self.version.version,
                 },
                 'mods': [],
+                'config': {
+                    'spawn-protection': 16,
+                    'gamemode': 'survival',
+                    'player-idle-timeout': 0,
+                    'difficulty': 'easy',
+                    'spawn-monsters': True,
+                    'op-permission-level': 4,
+                    'pvp': True,
+                    'level-type': 'default',
+                    'hardcore': False,
+                    'enable-command-block': False,
+                    'max-players': 3,
+                    'max-world-size': 15000,
+                    'spawn-npcs': True,
+                    'allow-flight': True,
+                    'spawn-animals': True,
+                    'generate-structures': True,
+                    'level-seed': None,
+                    'motd': 'Donkey Engine server'
+                },
                 'port': 0,
                 'status': 'CREATED',
             }
@@ -153,6 +194,7 @@ class GameTestCase(TestCase):
                 'game_id': self.game.id,
                 'version_id': self.version.id,
                 'mods': [mod.id],
+                'config': {},
             },
             content_type='application/json',
         )
@@ -184,6 +226,26 @@ class GameTestCase(TestCase):
                         }
                     },
                 ],
+                'config': {
+                    'spawn-protection': 16,
+                    'gamemode': 'survival',
+                    'player-idle-timeout': 0,
+                    'difficulty': 'easy',
+                    'spawn-monsters': True,
+                    'op-permission-level': 4,
+                    'pvp': True,
+                    'level-type': 'default',
+                    'hardcore': False,
+                    'enable-command-block': False,
+                    'max-players': 3,
+                    'max-world-size': 15000,
+                    'spawn-npcs': True,
+                    'allow-flight': True,
+                    'spawn-animals': True,
+                    'generate-structures': True,
+                    'level-seed': None,
+                    'motd': 'Donkey Engine server'
+                },
                 'port': 0,
                 'status': 'CREATED',
             }
