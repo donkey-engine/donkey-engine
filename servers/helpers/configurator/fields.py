@@ -1,3 +1,4 @@
+import json
 import typing as t
 
 from servers.helpers import exceptions
@@ -115,6 +116,10 @@ class TextField(BaseField):
             raise exceptions.ConfigurationValidationError(
                 f"{value} должно быть из списка разрешенных значений"
             )
+        if value is not None and len(value) > 1024:
+            raise exceptions.ConfigurationValidationError(
+                "Значение слишком длинное. Максимум 1024"
+            )
         return value
 
 
@@ -146,6 +151,13 @@ class NumberField(BaseField):
     def validate(self, value):
         value = super().validate(value)
         if value is not None:
+            if isinstance(value, str):
+                try:
+                    value = json.loads(value)
+                except json.JSONDecodeError:
+                    raise exceptions.ConfigurationValidationError(
+                        f"{value} должно быть числом"
+                    )
             if not isinstance(value, (int, float)):
                 raise exceptions.ConfigurationValidationError(
                     f"{value} должно быть числом"
