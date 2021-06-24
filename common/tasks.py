@@ -10,7 +10,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'stopping-empty-servers': {
         'task': 'common.tasks.check_servers',
-        'schedule': 15 * 60,
+        'schedule': 5 * 60,
     },
 }
 
