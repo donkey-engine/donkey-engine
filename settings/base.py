@@ -132,3 +132,6 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 
 HOST_NAME = 'https://donkey-engine.host'
 LOGIN_PAGE = 'https://donkey-engine.host/login'
+
+REDIS_HOST = 'redis'
+REDIS_PORT = 6379
