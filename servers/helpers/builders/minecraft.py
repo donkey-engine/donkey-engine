@@ -44,7 +44,7 @@ class MinecraftBuilder(BaseBuilder):
     def _create_dockerfile(self) -> None:
         self.files['Dockerfile'] = StringIO('''FROM openjdk:8u212-jre-alpine
 WORKDIR /home/app/
-CMD ["java","-Xmx1024M","-Xms1024M","-jar","server.jar","nogui"]''')
+CMD ["java","-Xmx2048M","-Xms2048M","-jar","server.jar","nogui"]''')
 
     def _create_eula(self):
         self.files['eula.txt'] = StringIO('eula=TRUE')
