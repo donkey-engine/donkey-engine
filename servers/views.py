@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from common.tasks import server_build_task, server_run_task, server_stop_task
-from servers.models import Server
+from servers.models import Server, ServerBuild
 from servers.serializers import (CreateServerSerializer, ServerSerializer,
                                  UpdateServerSerializer)
 
@@ -55,3 +55,25 @@ class ServersViewSet(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin
         server = self.get_object()
         server_stop_task.delay(server_id=server.id)
         return Response({'status': 'ok'})
+
+    @action(methods=['get'], detail=True)
+    def logs(self, request: Request, pk: str):
+        server = self.get_object()
+        if server.status not in ('RUNNING', 'STOPPED'):
+            return Response(
+                {'detail': 'У этого сервера еще нет логов'},
+                status=400,
+            )
+        build_instance = ServerBuild.objects.filter(
+            server_id=server.id,
+            kind='RUN',
+        ).order_by('finished').last()
+        if not build_instance:
+            return Response(
+                {'detail': 'У этого сервера еще нет логов'},
+                status=400,
+            )
+        return Response({
+            'build': build_instance.id,
+            'logs': build_instance.logs,
+        })
