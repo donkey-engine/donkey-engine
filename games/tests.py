@@ -38,7 +38,12 @@ class GameTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            [{'id': self.game.id, 'name': self.game.name}]
+            [{
+                'id': self.game.id,
+                'name': self.game.name,
+                'icon': None,
+                'description': '',
+            }]
         )
 
     def test_specific_game(self):
@@ -62,5 +67,7 @@ class GameTestCase(TestCase):
             {
                 'id': self.game.id,
                 'name': self.game.name,
+                'icon': None,
+                'description': '',
             }
         )

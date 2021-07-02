@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.test import Client, TestCase
 
 
@@ -99,3 +100,40 @@ class AuthTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 422)
         self.assertEqual(response.json(), {'username': ['Already exists']})
+
+    def test_created_user_is_not_active(self):
+        client = Client()
+        client.post(
+            '/api/signup/',
+            {
+                'username': 'test_username',
+                'email': 'test@email.ua',
+                'password': 'test_password'
+            },
+            content_type='application/json'
+        )
+        created_user = User.objects.get(username='test_username')
+        self.assertFalse(created_user.is_active)
+
+
+class EmailConfirmationTestCase(TestCase):
+
+    def test_wrong_confirmation_token(self):
+        user = User(username='test_user', is_active=False)
+        user.set_password('test_password')
+        user.save()
+
+        client = Client()
+        response = client.get('/api/confirm_email/', {'token': 'token', 'username': user.username})
+        self.assertTrue(response.status_code, 403)
+
+    def test_user_confirmation(self):
+        user = User(username='test_user', is_active=False)
+        user.set_password('test_password')
+        user.save()
+        token = PasswordResetTokenGenerator().make_token(user=user)
+
+        client = Client()
+        client.get('/api/confirm_email/', {'token': token, 'username': user.username})
+        user.refresh_from_db()
+        self.assertTrue(user.is_active)

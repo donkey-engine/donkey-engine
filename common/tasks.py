@@ -10,8 +10,12 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'stopping-empty-servers': {
         'task': 'common.tasks.check_servers',
-        'schedule': 15 * 60,
+        'schedule': 5 * 60,
     },
+    'writing-logs': {
+        'task': 'common.tasks.reading_logs',
+        'schedule': 5,
+    }
 }
 
 
@@ -20,6 +24,12 @@ def check_servers():
     """Check online on servers"""
     from servers.helpers.checkers import check_minecraft_servers
     check_minecraft_servers()
+
+
+@app.task
+def reading_logs():
+    from servers.helpers.logs import get_logs
+    get_logs()
 
 
 @app.task

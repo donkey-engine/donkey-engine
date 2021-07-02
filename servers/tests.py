@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
-from games.models import Game, GameVersion
+from games.models import Game, GameVersion, Mod, ModVersion
 from servers.models import Server
 
 
@@ -46,16 +46,40 @@ class GameTestCase(TestCase):
             response.json(),
             [{
                 'id': self.server.id,
+                'name': 'New server',
                 'port': 0,
                 'status': 'CREATED',
                 'game': {
                     'id': self.game.id,
                     'name': self.game.name,
+                    'icon': None,
+                    'description': '',
                 },
                 'version': {
                     'id': self.version.id,
                     'version': self.version.version,
-                }
+                },
+                'mods': [],
+                'config': {
+                    'spawn-protection': 16,
+                    'gamemode': 'survival',
+                    'player-idle-timeout': 0,
+                    'difficulty': 'easy',
+                    'spawn-monsters': True,
+                    'op-permission-level': 4,
+                    'pvp': True,
+                    'level-type': 'default',
+                    'hardcore': False,
+                    'enable-command-block': False,
+                    'max-players': 3,
+                    'max-world-size': 15000,
+                    'spawn-npcs': True,
+                    'allow-flight': True,
+                    'spawn-animals': True,
+                    'generate-structures': True,
+                    'level-seed': None,
+                    'motd': 'Donkey Engine server'
+                },
             }]
         )
 
@@ -85,27 +109,148 @@ class GameTestCase(TestCase):
             {
                 'game_id': self.game.id,
                 'version_id': self.version.id,
+                'config': {},
             },
             content_type='application/json',
         )
-        self.assertEqual(response.status_code, 201)
         last_server = Server.objects.last()
         self.assertEqual(
             response.json(),
             {
                 'id': last_server.id,  # type: ignore
+                'name': 'New server',
                 'game': {
                     'id': self.game.id,
                     'name': self.game.name,
+                    'icon': None,
+                    'description': '',
                 },
                 'version': {
                     'id': self.version.id,
                     'version': self.version.version,
                 },
+                'mods': [],
+                'config': {
+                    'spawn-protection': 16,
+                    'gamemode': 'survival',
+                    'player-idle-timeout': 0,
+                    'difficulty': 'easy',
+                    'spawn-monsters': True,
+                    'op-permission-level': 4,
+                    'pvp': True,
+                    'level-type': 'default',
+                    'hardcore': False,
+                    'enable-command-block': False,
+                    'max-players': 3,
+                    'max-world-size': 15000,
+                    'spawn-npcs': True,
+                    'allow-flight': True,
+                    'spawn-animals': True,
+                    'generate-structures': True,
+                    'level-seed': None,
+                    'motd': 'Donkey Engine server'
+                },
                 'port': 0,
                 'status': 'CREATED',
             }
         )
+        self.assertEqual(response.status_code, 201)
+
+    def test_create_server_with_mods(self):
+        c = Client()
+
+        response = c.post(
+            '/api/servers/',
+            {
+                'game_id': self.game.id,
+                'version_id': self.version.id,
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json(),
+            {
+                'detail': 'Authentication credentials were not provided.',
+            }
+        )
+
+        c.login(username='username', password='password')
+
+        mod = Mod.objects.create(
+            name='Test Mod',
+        )
+        mod_version = ModVersion.objects.create(
+            name='1.0.0',
+            mod=mod,
+            filepath='file/pa.th.jar',
+        )
+        mod_version.versions.set([self.version])
+        mod_version.save()
+        response = c.post(
+            '/api/servers/',
+            {
+                'name': 'custom name',
+                'game_id': self.game.id,
+                'version_id': self.version.id,
+                'mods': [mod.id],
+                'config': {},
+            },
+            content_type='application/json',
+        )
+        last_server = Server.objects.last()
+        self.assertEqual(
+            response.json(),
+            {
+                'id': last_server.id,  # type: ignore
+                'name': 'custom name',
+                'game': {
+                    'id': self.game.id,
+                    'name': self.game.name,
+                    'icon': None,
+                    'description': '',
+                },
+                'version': {
+                    'id': self.version.id,
+                    'version': self.version.version,
+                },
+                'mods': [
+                    {
+                        'id': mod_version.id,
+                        'name': mod_version.name,
+                        'mod': {
+                            'id': mod.id,
+                            'name': mod.name,
+                            'icon': None,
+                            'description': '',
+                        }
+                    },
+                ],
+                'config': {
+                    'spawn-protection': 16,
+                    'gamemode': 'survival',
+                    'player-idle-timeout': 0,
+                    'difficulty': 'easy',
+                    'spawn-monsters': True,
+                    'op-permission-level': 4,
+                    'pvp': True,
+                    'level-type': 'default',
+                    'hardcore': False,
+                    'enable-command-block': False,
+                    'max-players': 3,
+                    'max-world-size': 15000,
+                    'spawn-npcs': True,
+                    'allow-flight': True,
+                    'spawn-animals': True,
+                    'generate-structures': True,
+                    'level-seed': None,
+                    'motd': 'Donkey Engine server'
+                },
+                'port': 0,
+                'status': 'CREATED',
+            }
+        )
+        self.assertEqual(response.status_code, 201)
 
     def test_build_endpoint(self):
         c = Client()

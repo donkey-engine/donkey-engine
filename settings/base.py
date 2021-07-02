@@ -112,6 +112,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 STATIC_ROOT = os.getenv('STATIC_ROOT', '/app/donkeyengine/static/')
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', '/app/donkeyengine/media/')
 
@@ -129,4 +130,8 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 
-DOMAIN = 'donkey-engine.host'
+HOST_NAME = 'https://donkey-engine.host'
+LOGIN_PAGE = 'https://donkey-engine.host/login'
+
+REDIS_HOST = 'redis'
+REDIS_PORT = 6379

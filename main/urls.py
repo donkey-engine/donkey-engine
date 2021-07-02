@@ -10,7 +10,16 @@ from games import views as games_views
 from servers import views as servers_views
 
 router = routers.DefaultRouter()
-router.register(r'api/games/(?P<game_id>.+)/mods', games_views.GameModViewSet, basename='mods')
+router.register(
+    r'api/games/(?P<game_id>.+)/versions/(?P<version_id>.+)/mods',
+    games_views.GameModViewSet,
+    basename='mods',
+)
+router.register(
+    r'api/games/(?P<game_id>.+)/versions',
+    games_views.GameVersionsViewSet,
+    basename='versions',
+)
 router.register(r'api/games', games_views.GameViewSet, basename='games')
 router.register(r'api/servers', servers_views.ServersViewSet, basename='servers')
 
@@ -20,8 +29,9 @@ urlpatterns = [
     path('api/me/', account_views.get_me),
     path('api/auth/', account_views.AuthApiView.as_view()),
     path('api/signup/', account_views.SignupApiView.as_view()),
-    path('api/resend_email_confirmation/', account_views.ResendEmailConfirmationView.as_view()),
-    path('api/confirm_email/', account_views.ConfirmEmailView.as_view()),
+    path('api/resend_email_confirmation/', account_views.resend_email_confirmation_view),
+    path('api/confirm_email/', account_views.confirm_email_view),
+    path('api/games/<int:game_id>/config/', games_views.GameConfiguratorView.as_view()),
     path('api/logout/', account_views.logout_view),
 ]
 

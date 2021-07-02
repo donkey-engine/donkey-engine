@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from games.models import Game, GameVersion, Mod
+from games.models import Game, GameVersion, ModVersion
 
 SERVER_STATUSES = (
     ('CREATED', 'Just created'),
@@ -17,12 +17,14 @@ SERVER_BUILD_KINDS = (
 
 
 class Server(models.Model):
+    name = models.CharField(max_length=64, null=False, blank=False, default='New server')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=False)
     version = models.ForeignKey(GameVersion, on_delete=models.CASCADE, null=False)
-    mods = models.ManyToManyField(Mod, blank=True)
+    mods = models.ManyToManyField(ModVersion, blank=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(max_length=32, choices=SERVER_STATUSES, default='CREATED')
     port = models.IntegerField(null=False, default=0)
+    config = models.JSONField(default=dict)  # type: ignore
 
     def save(self, *args, **kwargs):
         if self.game != self.version.game:

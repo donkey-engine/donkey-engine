@@ -38,4 +38,8 @@ REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += [  # type: ignore  # noqa: F405
     'rest_framework.renderers.BrowsableAPIRenderer',
 ]
 
-DOMAIN = os.getenv('DOMAIN', '0.0.0.0')
+HOST_NAME = os.getenv('HOST_NAME', 'http://0.0.0.0:8000')
+LOGIN_PAGE = os.getenv('LOGIN_PAGE', 'http://0.0.0.0:8000/login')
+
+REDIS_HOST = '0.0.0.0'
+REDIS_PORT = 6379

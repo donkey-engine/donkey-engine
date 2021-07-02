@@ -22,8 +22,8 @@ class ModVersionInline(admin.TabularInline):  # type: ignore
 
 class ModAdmin(admin.ModelAdmin):  # type: ignore
     """Change name mods in admin panel"""
-    list_display = ('name', 'game')
-    list_filter = ('game',)
+    list_display = ('name',)
+    list_filter = ('name',)
 
     inlines = (ModVersionInline,)
 
