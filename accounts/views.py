@@ -7,6 +7,7 @@ from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from rest_framework import exceptions, generics, status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 
 from accounts.helpers.email import send_email_confirmation
@@ -114,3 +115,12 @@ def confirm_email_view(request: Request):
     user.is_active = True
     user.save()
     return redirect(settings.LOGIN_PAGE)
+
+
+@api_view(http_method_names=['GET'])
+@permission_classes((IsAuthenticated,))
+def get_me(request: Request):
+    return JsonResponse({
+        'id': request.user.id,
+        'username': request.user.username,
+    })
