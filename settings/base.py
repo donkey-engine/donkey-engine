@@ -135,3 +135,6 @@ LOGIN_PAGE = 'https://donkey-engine.host/login'
 
 REDIS_HOST = 'redis'
 REDIS_PORT = 6379
+
+SERVICE_WSBACKEND_HOST = os.getenv('SERVICE_WSBACKEND_HOST', 'wsbackend')
+SERVICE_WSBACKEND_PORT = int(os.getenv('SERVICE_WSBACKEND_PORT', '8888'))

@@ -3,6 +3,8 @@ from datetime import datetime
 import docker
 
 from common.clients.redis import client as redis
+from common.clients.ws import client as ws
+from common.clients.ws import get_user_room
 from servers.models import Server, ServerBuild
 
 LOGS_LOCK_REDIS_KEY = 'servers:logs-lock'
@@ -55,6 +57,19 @@ def get_logs():
             )
             redis.set(redis_last_logs_key, now)
 
+            # Send logs to WebSocket server
+            ws.new_event(
+                get_user_room(server.owner.id),
+                {
+                    'type': 'LOGS',
+                    'data': {
+                        'server_id': server.id,
+                        'logs': logs.decode('UTF-8'),
+                    },
+                }
+            )
+
+            # Save logs to db
             build_instance.logs += logs.decode('UTF-8')
             build_instance.save()
 
