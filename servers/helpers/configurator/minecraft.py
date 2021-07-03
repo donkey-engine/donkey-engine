@@ -315,8 +315,8 @@ class MinecraftConfigurator(BaseConfigurator):
             name='online-mode',
             description='',
             required=True,
-            default=True,
-            editable=False,
+            default=False,
+            editable=True,
         ),
         'max-build-height': NumberField(
             name='max-build-height',
