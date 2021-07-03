@@ -1,6 +1,8 @@
 import logging
 import typing as t
 
+from common.clients.ws import client as ws
+from common.clients.ws import get_user_room
 from servers.helpers import exceptions
 from servers.helpers.builders.base import BaseBuilder
 from servers.helpers.builders.minecraft import MinecraftBuilder
@@ -58,6 +60,17 @@ def build_server(server_id: int) -> None:
     builder = builder_class(server)
     builder.build()
 
+    ws.new_event(
+        get_user_room(server.owner.id),
+        {
+            'type': 'SERVERS',
+            'data': {
+                'server_id': server.id,
+                'status': 'BUILT',
+            },
+        }
+    )
+
 
 def run_server(server_id: int) -> None:
     try:
@@ -76,6 +89,17 @@ def run_server(server_id: int) -> None:
     runner = runner_class(server_id)
     runner.run()
 
+    ws.new_event(
+        get_user_room(server.owner.id),
+        {
+            'type': 'SERVERS',
+            'data': {
+                'server_id': server.id,
+                'status': 'RUNNING',
+            },
+        }
+    )
+
 
 def stop_server(server_id: int) -> None:
     try:
@@ -86,3 +110,14 @@ def stop_server(server_id: int) -> None:
     runner_class = get_runner(server.game.build_key)
     runner = runner_class(server_id)
     runner.stop()
+
+    ws.new_event(
+        get_user_room(server.owner.id),
+        {
+            'type': 'SERVERS',
+            'data': {
+                'server_id': server.id,
+                'status': 'STOPPED',
+            },
+        }
+    )
