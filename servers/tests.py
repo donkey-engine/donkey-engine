@@ -78,7 +78,8 @@ class GameTestCase(TestCase):
                     'spawn-animals': True,
                     'generate-structures': True,
                     'level-seed': None,
-                    'motd': 'Donkey Engine server'
+                    'motd': 'Donkey Engine server',
+                    'online-mode': False,
                 },
             }]
         )
@@ -148,7 +149,8 @@ class GameTestCase(TestCase):
                     'spawn-animals': True,
                     'generate-structures': True,
                     'level-seed': None,
-                    'motd': 'Donkey Engine server'
+                    'motd': 'Donkey Engine server',
+                    'online-mode': False,
                 },
                 'port': 0,
                 'status': 'CREATED',
@@ -244,7 +246,8 @@ class GameTestCase(TestCase):
                     'spawn-animals': True,
                     'generate-structures': True,
                     'level-seed': None,
-                    'motd': 'Donkey Engine server'
+                    'motd': 'Donkey Engine server',
+                    'online-mode': False,
                 },
                 'port': 0,
                 'status': 'CREATED',
