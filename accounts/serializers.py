@@ -25,3 +25,7 @@ class ResendEmailSerializer(serializers.Serializer):
     username = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username')
+
+
+class DiscordRedirectSerializer(serializers.Serializer):
+    code = serializers.CharField(required=True)

@@ -22,6 +22,7 @@ router.register(
 )
 router.register(r'api/games', games_views.GameViewSet, basename='games')
 router.register(r'api/servers', servers_views.ServersViewSet, basename='servers')
+router.register(r'api/auth', account_views.DiscordAuthView, basename='discord-auth')
 
 
 urlpatterns = [

@@ -1,6 +1,10 @@
+from unittest.mock import patch
+
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.test import Client, TestCase
+
+from accounts.models import Profile
 
 
 class AuthTestCase(TestCase):
@@ -114,6 +118,30 @@ class AuthTestCase(TestCase):
         )
         created_user = User.objects.get(username='test_username')
         self.assertFalse(created_user.is_active)
+
+
+class DiscordAuthTestCase(TestCase):
+
+    # TODO: test case with existsed username
+
+    @patch(
+        'accounts.views.DiscordAuthView.exchange_code',
+        return_value={'access_token': 'test_access_token'}
+    )
+    @patch(
+        'accounts.views.DiscordAuthView.get_current_user',
+        return_value={
+            'id': 'discord_id',
+            'username': 'discord_user',
+            'email': 'email@test.com'
+        }
+    )
+    def test_signup_will_create_profile(self, exchange_code_mock, get_current_user_mock):
+        client = Client()
+        client.get('/api/auth/discord/redirect/?code=test_code')
+        profile = Profile.objects.last()
+        self.assertIsNotNone(profile)
+        self.assertEqual(profile.discord_id, 'discord_id')  # type: ignore
 
 
 class EmailConfirmationTestCase(TestCase):
