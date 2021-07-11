@@ -42,13 +42,11 @@ class WsClient:
         data: EventType,
     ) -> requests.Response:
         """Make a request."""
-        response = self._session.request(
+        return self._session.request(
             method,
             f'http://{self.host}:{self.port}/{url}',
             json=data,
         )
-        print(response.text)
-        return response
 
     def new_event(self, to: UUID, event: EventType):
         """Send new event to WebSocket server."""
