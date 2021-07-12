@@ -1,3 +1,7 @@
+import typing as t
+from urllib.parse import urlencode
+
+import requests
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -5,13 +9,17 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
-from rest_framework import exceptions, generics, status
-from rest_framework.decorators import api_view, permission_classes
+from django.urls import reverse
+from rest_framework import exceptions, generics, status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 
 from accounts.helpers.email import send_email_confirmation
+from accounts.helpers.user import (EmailAlreadyExists, UsernameAlreadyExists,
+                                   discord_signup, signup)
 from accounts.serializers import (AuthSerializer, ConfirmEmailSerializer,
+                                  DiscordRedirectSerializer,
                                   ResendEmailSerializer, SignupSerializer)
 
 
@@ -61,24 +69,82 @@ class SignupApiView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 
-        if User.objects.filter(username=validated_data['username']).exists():
+        try:
+            signup(validated_data['username'],
+                   validated_data['password'],
+                   validated_data['email'])
+        except UsernameAlreadyExists:
             return JsonResponse(
                 {'username': ['Already exists']},
-                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            )
-        elif User.objects.filter(email=validated_data['email']).exists():
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        except EmailAlreadyExists:
             return JsonResponse(
                 {'email': ['Already exists']},
-                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            )
-        else:
-            User.objects.create_user(
-                username=validated_data['username'],
-                password=validated_data['password'],
-                email=validated_data['email'],
-                is_active=False,
-            )
-            return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
+
+
+class DiscordAuthView(viewsets.ViewSet):
+    permission_classes = ()
+
+    class TokenInfo(t.TypedDict):
+        access_token: str
+        token_type: str
+        expires_in: int
+        refresh_token: str
+        scope: str
+
+    class CurrentUser(t.TypedDict):
+        id: str
+        username: str
+        email: str
+
+    @action(detail=False)
+    def discord(self, request: Request):
+        url_path = reverse('discord-auth-redirect')
+        query = {
+            'response_type': 'code',
+            'client_id': settings.DISCORD_CLIENT_ID,
+            'scope': 'identify email',
+            'redirect_uri': settings.HOST_NAME + url_path
+        }
+        url = f'{settings.DISCORD_AUTHORIZATION_URL}?{urlencode(query)}'
+        return redirect(url)
+
+    @action(detail=False, url_path='discord/redirect')
+    def redirect(self, request: Request):
+        serializer = DiscordRedirectSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        code = serializer.validated_data['code']
+        token_info = self.exchange_code(code)
+        access_token = token_info['access_token']
+
+        current_user = self.get_current_user(access_token)
+        # TODO: handle already existed username
+        user = discord_signup(username=current_user['username'],
+                              email=current_user['email'],
+                              discord_id=current_user['id'])
+        login(request, user)
+        return redirect(settings.LOGIN_PAGE)
+
+    def exchange_code(self, code: str) -> TokenInfo:
+        url_path = reverse('discord-auth-redirect')
+        data = {
+            'client_id': settings.DISCORD_CLIENT_ID,
+            'client_secret': settings.DISCORD_CLIENT_SECRET,
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': settings.HOST_NAME + url_path
+        }
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        response = requests.post(settings.DISCORD_TOKEN_URL, data=data, headers=headers)
+        return response.json()
+
+    def get_current_user(self, access_token: str) -> CurrentUser:
+        headers = {'Authorization': f'Bearer {access_token}'}
+        response = requests.get(f'{settings.DISCORD_API_URL}/users/@me', headers=headers)
+        return response.json()
 
 
 def logout_view(request: HttpRequest):
