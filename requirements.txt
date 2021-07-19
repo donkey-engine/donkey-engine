@@ -7,3 +7,4 @@ gunicorn==20.1.0
 mcstatus==5.2.0
 psycopg2-binary==2.8.6
 redis==3.5.3
+requests==2.25.1
