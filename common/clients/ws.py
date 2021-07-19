@@ -8,7 +8,6 @@ from django.conf import settings
 
 from common.clients.redis import client as redis
 
-REDIS_USER_ROOM_KEY = 'ws:{user_id}'
 REDIS_USER_ROOM_EXPIRE = 60 * 60 * 24
 EventType = t.Dict[str, t.Any]
 HttpMethods = t.Literal['GET', 'POST', 'PUT', 'DELETE']
@@ -16,7 +15,7 @@ HttpMethods = t.Literal['GET', 'POST', 'PUT', 'DELETE']
 
 def get_user_room(user_id: int, extend: bool = False) -> UUID:
     """Get or create a user room for WebSocket server."""
-    redis_key = REDIS_USER_ROOM_KEY.format(user_id=user_id)
+    redis_key = f'ws:{user_id}'
     if room_id := redis.get(redis_key):
         if extend:
             redis.expire(redis_key, REDIS_USER_ROOM_EXPIRE)
