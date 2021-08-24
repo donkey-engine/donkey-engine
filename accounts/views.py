@@ -21,6 +21,7 @@ from accounts.helpers.user import (EmailAlreadyExists, UsernameAlreadyExists,
 from accounts.serializers import (AuthSerializer, ConfirmEmailSerializer,
                                   DiscordRedirectSerializer,
                                   ResendEmailSerializer, SignupSerializer)
+from common.clients.ws import get_user_room
 
 
 class AuthApiView(generics.GenericAPIView):
@@ -189,4 +190,5 @@ def get_me(request: Request):
     return JsonResponse({
         'id': request.user.id,
         'username': request.user.username,
+        'websocket_room': get_user_room(request.user.id, extend=True).hex,
     })

@@ -136,6 +136,9 @@ LOGIN_PAGE = 'https://donkey-engine.host/login'
 REDIS_HOST = 'redis'
 REDIS_PORT = 6379
 
+SERVICE_WSBACKEND_HOST = os.getenv('SERVICE_WSBACKEND_HOST', 'wsbackend')
+SERVICE_WSBACKEND_PORT = int(os.getenv('SERVICE_WSBACKEND_PORT', '8888'))
+
 DISCORD_API_URL = "https://discord.com/api/v9"
 DISCORD_AUTHORIZATION_URL = "https://discord.com/api/oauth2/authorize"
 DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
