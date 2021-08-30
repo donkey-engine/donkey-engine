@@ -9,11 +9,17 @@ from common.tasks import server_build_task, server_run_task, server_stop_task
 from servers.models import Server, ServerBuild
 from servers.serializers import (CreateServerSerializer, ServerSerializer,
                                  UpdateServerSerializer)
+from servers.throttling import CreateServerRateThrottle
 
 
 class ServersViewSet(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin, UpdateModelMixin):
 
     serializer_class = ServerSerializer
+
+    def get_throttles(self):
+        if self.action == 'create':
+            return [CreateServerRateThrottle()]
+        return []
 
     def get_queryset(self):
         return Server.objects.filter(owner=self.request.user)
