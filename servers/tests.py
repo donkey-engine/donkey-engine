@@ -1,13 +1,13 @@
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.test import Client, TransactionTestCase
 
 from games.models import Game, GameVersion, Mod, ModVersion
 from servers.models import Server
 
 
-class ServerTestCase(TestCase):
+class ServerTestCase(TransactionTestCase):
     def setUp(self):
         self.game = Game.objects.create(
             name='Minecraft: Java Edition',
