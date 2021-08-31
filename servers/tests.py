@@ -1,11 +1,13 @@
+from unittest.mock import patch
+
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.test import Client, TransactionTestCase
 
 from games.models import Game, GameVersion, Mod, ModVersion
 from servers.models import Server
 
 
-class GameTestCase(TestCase):
+class ServerTestCase(TransactionTestCase):
     def setUp(self):
         self.game = Game.objects.create(
             name='Minecraft: Java Edition',
@@ -254,6 +256,37 @@ class GameTestCase(TestCase):
             }
         )
         self.assertEqual(response.status_code, 201)
+
+    @patch('servers.throttling.CreateServerRateThrottle.rate', '1/min')
+    def test_create_server_throttling(self):
+        c = Client()
+        c.login(username='username', password='password')
+
+        response = c.post(
+            '/api/servers/',
+            {
+                'game_id': self.game.id,
+                'version_id': self.version.id,
+                'config': {},
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+
+        throttle_response = c.post(
+            '/api/servers/',
+            {
+                'game_id': self.game.id,
+                'version_id': self.version.id,
+                'config': {},
+            },
+            content_type='application/json',
+        )
+        self.assertEqual(throttle_response.status_code, 429)
+        self.assertDictEqual(
+            throttle_response.json(),
+            {'detail': 'Request was throttled. Expected available in 60 seconds.'}
+        )
 
     def test_build_endpoint(self):
         c = Client()
