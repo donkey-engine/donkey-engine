@@ -1,14 +1,14 @@
 from django.contrib import admin
 
-from games.models import Game, GameVersion, Mod, ModVersion
 from games.forms import GameForm
+from games.models import Game, GameVersion, Mod, ModVersion
 
 
 class VersionsInline(admin.TabularInline):  # type: ignore
     model = GameVersion
     extra = 1
 
-
+ 
 class GameAdmin(admin.ModelAdmin):  # type: ignore
     """Change name game in admin panel"""
     form = GameForm
