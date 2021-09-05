@@ -8,7 +8,7 @@ class VersionsInline(admin.TabularInline):  # type: ignore
     model = GameVersion
     extra = 1
 
- 
+
 class GameAdmin(admin.ModelAdmin):  # type: ignore
     """Change name game in admin panel"""
     form = GameForm
