@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from games.forms import GameForm
 from games.models import Game, GameVersion, Mod, ModVersion
 
 
@@ -10,6 +11,7 @@ class VersionsInline(admin.TabularInline):  # type: ignore
 
 class GameAdmin(admin.ModelAdmin):  # type: ignore
     """Change name game in admin panel"""
+    form = GameForm
     list_display = ('name',)
 
     inlines = (VersionsInline,)
