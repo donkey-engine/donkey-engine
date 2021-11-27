@@ -3,4 +3,4 @@ from django.http.request import HttpRequest
 
 
 def healthcheck(request: HttpRequest):
-    return JsonResponse({"status": "success"})
+    return JsonResponse({'status': 'success'})
