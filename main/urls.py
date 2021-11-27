@@ -7,6 +7,7 @@ from rest_framework import routers
 
 from accounts import views as account_views
 from games import views as games_views
+from main.views import healthcheck
 from servers import views as servers_views
 
 router = routers.DefaultRouter()
@@ -26,6 +27,7 @@ router.register(r'api/auth', account_views.DiscordAuthView, basename='discord-au
 
 
 urlpatterns = [
+    path('health/', healthcheck),
     path('admin/', admin.site.urls),
     path('api/me/', account_views.get_me),
     path('api/auth/', account_views.AuthApiView.as_view()),
