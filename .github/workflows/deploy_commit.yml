@@ -20,4 +20,4 @@ jobs:
         -H "Authorization: token ${{ secrets.PERSONAL_TOKEN }}" \
         -H "Accept: application/vnd.github.v3+json" \
         https://api.github.com/repos/donkey-engine/deploy/actions/workflows/deploy_commit.yml/dispatches \
-        -d '{"ref": "master", "inputs": {"commit": "${GITHUB_SHA::8}", "repo": "django", "release": "${{ steps.releasetag.outputs.tag }}"}}'
+        -d '{"ref": "master", "inputs": {"commit": "${GITHUB_SHA::8}", "branch": "${GITHUB_REF##*/}", "repo": "django", "release": "${{ steps.releasetag.outputs.tag }}"}}'
