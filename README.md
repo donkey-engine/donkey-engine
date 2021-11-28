@@ -1,6 +1,6 @@
-[![CI](https://github.com/donkey-engine/donkey-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/donkey-engine/donkey-engine/actions/workflows/ci.yml)
-
 # donkey-engine
+
+[![CI](https://github.com/donkey-engine/donkey-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/donkey-engine/donkey-engine/actions/workflows/ci.yml)
 
 ## Run
 
