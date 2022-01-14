@@ -144,3 +144,5 @@ DISCORD_AUTHORIZATION_URL = "https://discord.com/api/oauth2/authorize"
 DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
 DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID')
 DISCORD_CLIENT_SECRET = os.getenv('DISCORD_CLIENT_SECRET')
+
+DST_TOKEN = os.environ['DST_TOKEN']

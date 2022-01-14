@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class BuildStage(t.TypedDict):
     name: str
-    func: t.Callable[..., None]
+    func: t.Callable[[], None]
 
 
 class BaseBuilder:
