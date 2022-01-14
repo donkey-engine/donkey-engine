@@ -8,10 +8,11 @@ on:
     branches:
       - master
 
+env:
+  DST_TOKEN: DST_TOKEN
+
 jobs:
 
-  env:
-    DST_TOKEN: DST_TOKEN
   lint:
     runs-on: ubuntu-latest
     strategy:
