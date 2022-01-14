@@ -5,10 +5,13 @@ from common.clients.ws import client as ws
 from common.clients.ws import get_user_room
 from servers.helpers import exceptions
 from servers.helpers.builders.base import BaseBuilder
+from servers.helpers.builders.dont_starve import DontStarveBuilder
 from servers.helpers.builders.minecraft import MinecraftBuilder
 from servers.helpers.configurator.base import BaseConfigurator
+from servers.helpers.configurator.dont_starve import DontStarveConfigurator
 from servers.helpers.configurator.minecraft import MinecraftConfigurator
 from servers.helpers.runners.base import BaseRunner
+from servers.helpers.runners.dont_starve import DontStarveRunner
 from servers.helpers.runners.minecraft import MinecraftRunner
 from servers.models import Server
 
@@ -23,6 +26,11 @@ ALLOWED_GAMES = {
         BUILDER: MinecraftBuilder,
         CONFIGURATOR: MinecraftConfigurator,
     },
+    "Don't Starve: Together": {
+        RUNNER: DontStarveRunner,
+        BUILDER: DontStarveBuilder,
+        CONFIGURATOR: DontStarveConfigurator,
+    }
 }
 
 
