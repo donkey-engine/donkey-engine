@@ -10,6 +10,8 @@ on:
 
 jobs:
 
+  env:
+    DST_TOKEN: DST_TOKEN
   lint:
     runs-on: ubuntu-latest
     strategy:
