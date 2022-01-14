@@ -51,3 +51,6 @@ matrix:
         - python manage.py makemigrations --check --settings=settings.ci
         - python manage.py migrate --settings=settings.ci
         - python manage.py check --settings=settings.ci
+
+env:
+  - DST_TOKEN="DST_TOKEN"
