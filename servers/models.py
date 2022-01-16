@@ -17,13 +17,15 @@ SERVER_BUILD_KINDS = (
 
 
 class Server(models.Model):
+    DEFAULT_PORT = 0
+
     name = models.CharField(max_length=64, null=False, blank=False, default='New server')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=False)
     version = models.ForeignKey(GameVersion, on_delete=models.CASCADE, null=False)
     mods = models.ManyToManyField(ModVersion, blank=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(max_length=32, choices=SERVER_STATUSES, default='CREATED')
-    port = models.IntegerField(null=False, default=0)
+    port = models.IntegerField(null=False, default=DEFAULT_PORT)
     config = models.JSONField(default=dict)  # type: ignore
 
     def save(self, *args, **kwargs):

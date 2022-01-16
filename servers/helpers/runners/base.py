@@ -11,25 +11,41 @@ from servers.models import Server, ServerBuild
 logger = logging.getLogger(__name__)
 
 
+class ContainerConfig:
+
+    volumes: t.Sequence[str] = []
+    ports: t.Dict[str, t.Optional[str]] = {}
+
+    def __init__(self, directory: str):
+        self.directory = directory
+
+
 class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues/51
     """Base class for game image/container management."""
+
+    container_config_class = ContainerConfig
+
     def __init__(self, server_id: int):
         self.server_id: int = server_id
         self.server = Server.objects.get(id=server_id)
         self.client: docker.DockerClient = docker.from_env()
         self.directory: str = self._get_dockerfile_directory()
+        self.container_config = self.container_config_class(self.directory)
 
     def get_container_port(self, attempts=100) -> int:
-        """Get container oper port."""
-        for _ in range(attempts):
-            for container in self.client.containers.list():
-                if container.name != f'server{self.server_id}':
-                    continue
-                for port in container.ports.get('25565/tcp', []):
-                    if not port['HostPort']:
+        """Get container open port."""
+        if self.container_config.ports:
+            for _ in range(attempts):
+                for container in self.client.containers.list():
+                    if container.name != f'server{self.server_id}':
                         continue
-                    return int(port['HostPort'])
-        raise exceptions.ServerNotRunning()
+                    for port in container.ports.get('25565/tcp', []):
+                        if not port['HostPort']:
+                            continue
+                        return int(port['HostPort'])
+            raise exceptions.ServerNotRunning()
+        else:
+            return Server.DEFAULT_PORT
 
     def get_or_create_image(self) -> str:  # TODO add reuse existed images
         """Get or create docker image."""
@@ -47,7 +63,7 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
             if container.name == f'server{self.server_id}':
                 container.stop()
                 break
-        self.server.port = 0
+        self.server.port = Server.DEFAULT_PORT
         self.server.status = 'STOPPED'
         self.server.save()
         build_instance = ServerBuild.objects.filter(
@@ -72,24 +88,20 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
             image_name = self.get_or_create_image()
         except Exception as exc:
             logger.exception(exc)
-            logs.append('Create Minecraft server image - Error')
+            logs.append('Create server image - Error')
             build_instance.success = False
             build_instance.logs = '\n'.join(logs)
             build_instance.save()
             return None
         else:
-            logs.append('Create Minecraft server image - OK')
+            logs.append('Create server image - OK')
 
         try:
             self.client.containers.run(
                 image_name,
                 detach=True,
-                volumes=[
-                    f'{self.directory}:/home/app',
-                ],
-                ports={
-                    '25565/tcp': None,
-                },
+                volumes=self.container_config.volumes,
+                ports=self.container_config.ports,
                 name=f'server{self.server_id}',
                 remove=True,
                 hostname=f'server{self.server_id}',
@@ -97,25 +109,25 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
             )
         except Exception as exc:
             logger.exception(exc)
-            logs.append('Staring Minecraft server - Error')
+            logs.append('Staring server - Error')
             build_instance.success = False
             build_instance.logs = '\n'.join(logs)
             build_instance.save()
             return None
         else:
-            logs.append('Staring Minecraft server - OK')
+            logs.append('Staring server - OK')
 
         try:
             port = self.get_container_port()
         except Exception as exc:
             logger.exception(exc)
-            logs.append('Checking Minecraft server - Error')
+            logs.append('Checking server - Error')
             build_instance.success = False
             build_instance.logs = '\n'.join(logs)
             build_instance.save()
             return None
         else:
-            logs.append(f'Minecraft server port - {port}')
+            logs.append(f'Server port - {port}')
         build_instance.success = True
         build_instance.logs = '\n'.join(logs)
         build_instance.save()
