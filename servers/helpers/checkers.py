@@ -16,7 +16,10 @@ KEY_EXPIRING = 60 * 60
 
 
 def check_minecraft_servers():
-    for server in Server.objects.filter(status='RUNNING'):
+    for server in Server.objects.filter(
+            status='RUNNING',
+            game__build_key='Minecraft: Java Edition',
+    ):
         domain = urlparse(settings.HOST_NAME).netloc
 
         try:
