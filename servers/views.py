@@ -1,18 +1,17 @@
 from rest_framework import exceptions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.mixins import (ListModelMixin, RetrieveModelMixin,
-                                   UpdateModelMixin)
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from common.tasks import server_build_task, server_run_task, server_stop_task
+from servers.helpers.adapters import delete_server
 from servers.models import Server, ServerBuild
 from servers.serializers import (CreateServerSerializer, ServerSerializer,
                                  UpdateServerSerializer)
 from servers.throttling import CreateServerRateThrottle
 
 
-class ServersViewSet(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin, UpdateModelMixin):
+class ServersViewSet(viewsets.ModelViewSet):
 
     serializer_class = ServerSerializer
 
@@ -23,6 +22,9 @@ class ServersViewSet(viewsets.GenericViewSet, ListModelMixin, RetrieveModelMixin
 
     def get_queryset(self):
         return Server.objects.filter(owner=self.request.user)
+
+    def perform_destroy(self, instance):
+        delete_server(instance.id)
 
     def create(self, request, *args, **kwargs):
         context = self.get_serializer_context()

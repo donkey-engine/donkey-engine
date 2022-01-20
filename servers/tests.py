@@ -1,9 +1,12 @@
+import os
+import tempfile
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.test import Client, TransactionTestCase
 
 from games.models import Game, GameVersion, Mod, ModVersion
+from servers.helpers.adapters import get_server_directory
 from servers.models import Server
 
 
@@ -256,6 +259,31 @@ class ServerTestCase(TransactionTestCase):
             }
         )
         self.assertEqual(response.status_code, 201)
+
+    def test_deleting_server_will_delete_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            build_directory = tmp + '/{server_id}'
+            with self.settings(BUILD_FILE_DIRECTORY=build_directory):
+                directory = get_server_directory(self.server.id)
+                os.mkdir(directory)
+
+                client = Client()
+                client.login(username='username', password='password')
+                client.delete(f'/api/servers/{self.server.id}/')
+                self.assertFalse(os.path.exists(directory))
+
+    def test_user_cant_delete_not_owned_server(self):
+        User.objects.create_user(
+            username='username2',
+            email='e@mail.ru',
+            password='password',
+        )
+        client = Client()
+        client.login(username='username2', password='password')
+
+        print(self.server.id)
+        response = client.delete(f'/api/servers/{self.server.id}/')
+        self.assertEqual(response.status_code, 404)
 
     @patch('servers.throttling.CreateServerRateThrottle.rate', '1/min')
     def test_create_server_throttling(self):
