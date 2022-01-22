@@ -131,6 +131,7 @@ def stop_server(server_id: int) -> None:
     runner = runner_class(server_id, directory)
     runner.stop()
 
+    logger.info(f'Server №{server.id} has been stopped')
     ws.new_event(
         get_user_room(server.owner.id),
         {
