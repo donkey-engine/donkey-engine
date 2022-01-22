@@ -145,6 +145,7 @@ def stop_server(server_id: int) -> None:
 
 
 def delete_server(server_id: int) -> None:
+    stop_server(server_id)
     Server.objects.filter(id=server_id).delete()
     directory = get_server_directory(server_id)
     shutil.rmtree(directory, ignore_errors=True)
