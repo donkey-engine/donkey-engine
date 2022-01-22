@@ -1,9 +1,7 @@
 import logging
 import typing as t
-from pathlib import Path
 
 import docker
-from django.conf import settings
 
 from servers.helpers import exceptions
 from servers.models import Server, ServerBuild
@@ -25,11 +23,11 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
 
     container_config_class = ContainerConfig
 
-    def __init__(self, server_id: int):
+    def __init__(self, server_id: int, directory: str):
         self.server_id: int = server_id
         self.server = Server.objects.get(id=server_id)
         self.client: docker.DockerClient = docker.from_env()
-        self.directory: str = self._get_dockerfile_directory()
+        self.directory: str = directory
         self.container_config = self.container_config_class(self.directory)
 
     def get_container_port(self, attempts=100) -> int:
@@ -135,12 +133,3 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
         self.server.port = port
         self.server.save()
         return port
-
-    def _get_dockerfile_directory(self) -> str:
-        return str(
-            Path(
-                settings.BUILD_FILE_DIRECTORY.format(
-                    server_id=self.server_id,
-                )
-            ).absolute()
-        )

@@ -1,5 +1,9 @@
 import logging
+import shutil
 import typing as t
+from pathlib import Path
+
+from django.conf import settings
 
 from common.clients.ws import client as ws
 from common.clients.ws import get_user_room
@@ -58,6 +62,11 @@ def get_runner(build_key: str) -> t.Type[BaseRunner]:
         raise exceptions.RunnerNotFound() from exc
 
 
+def get_server_directory(server_id: int) -> str:
+    path = Path(settings.BUILD_FILE_DIRECTORY.format(server_id=server_id))
+    return str(path.absolute())
+
+
 def build_server(server_id: int) -> None:
     try:
         server = Server.objects.select_related('game').get(id=server_id)
@@ -90,11 +99,13 @@ def run_server(server_id: int) -> None:
     other_user_servers = Server.objects.filter(owner=server.owner, status='RUNNING')
     for user_server in other_user_servers:
         runner_class = get_runner(server.game.build_key)
-        runner = runner_class(user_server.id)
+        directory = get_server_directory(user_server.id)
+        runner = runner_class(user_server.id, directory)
         runner.stop()
 
     runner_class = get_runner(server.game.build_key)
-    runner = runner_class(server_id)
+    directory = get_server_directory(server_id)
+    runner = runner_class(server_id, directory)
     runner.run()
 
     ws.new_event(
@@ -116,7 +127,8 @@ def stop_server(server_id: int) -> None:
         logger.exception(exc)
         raise exceptions.BaseError() from exc
     runner_class = get_runner(server.game.build_key)
-    runner = runner_class(server_id)
+    directory = get_server_directory(server_id)
+    runner = runner_class(server_id, directory)
     runner.stop()
 
     ws.new_event(
@@ -129,3 +141,10 @@ def stop_server(server_id: int) -> None:
             },
         }
     )
+
+
+def delete_server(server_id: int) -> None:
+    Server.objects.filter(id=server_id).delete()
+    directory = get_server_directory(server_id)
+    shutil.rmtree(directory, ignore_errors=True)
+    logger.info(f'Server №{server_id} has been deleted')
