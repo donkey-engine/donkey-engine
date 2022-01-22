@@ -261,7 +261,7 @@ class ServerTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 201)
 
     @patch('common.clients.ws.WsClient.new_event', lambda *args: None)
-    @patch('common.clients.ws.get_user_room', lambda *args: None)
+    @patch('servers.helpers.adapters.get_user_room', lambda *args: None)
     def test_deleting_server_will_delete_directory(self):
         with tempfile.TemporaryDirectory() as tmp:
             build_directory = tmp + '/{server_id}'
