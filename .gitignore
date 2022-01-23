@@ -2,11 +2,12 @@
 .idea/
 
 venv/
-env/
 .env
 
 __pycache__/
+.mypy_cache/
 
 media/
+local_storage/
 
 celerybeat-schedule
