@@ -6,6 +6,9 @@ from servers.helpers import exceptions
 
 class BaseField:
     """Base class for configurator fields."""
+
+    field_type = 'base'
+
     def __init__(
         self,
         name: str,
@@ -22,7 +25,6 @@ class BaseField:
             'default': default,
             'editable': editable,
         }
-        self.field_type: str = 'base'
 
     def api_representation(self):
         return {
@@ -55,24 +57,8 @@ class BaseField:
 
 
 class BooleanField(BaseField):
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        required: bool = True,
-        default: t.Any = None,
-        editable: bool = True,
-        **kwargs,
-    ):
-        super().__init__(
-            name=name,
-            description=description,
-            required=required,
-            default=default,
-            editable=editable,
-            **kwargs,
-        )
-        self.field_type = 'boolean'
+
+    field_type = 'boolean'
 
     def validate(self, value):
         value = super().validate(value)
@@ -85,6 +71,9 @@ class BooleanField(BaseField):
 
 class TextField(BaseField):
     """Text input field."""
+
+    field_type = 'text'
+
     def __init__(
         self,
         name: str,
@@ -103,7 +92,6 @@ class TextField(BaseField):
             editable=editable,
             **kwargs,
         )
-        self.field_type = 'text'
         self.config['choices'] = choices
 
     def validate(self, value):
@@ -125,6 +113,9 @@ class TextField(BaseField):
 
 class NumberField(BaseField):
     """Number input field."""
+
+    field_type = 'number'
+
     def __init__(
         self,
         name: str,
@@ -144,7 +135,6 @@ class NumberField(BaseField):
             editable=editable,
             **kwargs,
         )
-        self.field_type = 'number'
         self.config['min_value'] = min_value
         self.config['max_value'] = max_value
 
@@ -171,3 +161,8 @@ class NumberField(BaseField):
                     f"{value} больше чем {self.config['max_value']}"
                 )
         return value
+
+
+class PasswordField(BaseField):
+
+    field_type = 'password'

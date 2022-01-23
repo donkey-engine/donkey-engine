@@ -19,4 +19,7 @@ class DontStarveBuilder(BaseBuilder):
     def _create_dockerfile(self):
         self.files['Dockerfile'] = StringIO(f'''FROM yeetzone/dontstarvetogether
 ENV NAME="{self.server.name}"
-ENV TOKEN="{settings.DST_TOKEN}"''')
+ENV TOKEN="{settings.DST_TOKEN}"
+ENV LANGUAGE="ru"
+ENV PAUSE_WHEN_EMPTY="true"
+ENV PASSWORD="{self.server.config['password']}"''')
