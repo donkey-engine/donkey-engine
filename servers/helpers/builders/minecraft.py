@@ -13,10 +13,6 @@ class MinecraftBuilder(BaseBuilder):
     def get_stages(self) -> t.List[BuildStage]:
         return [
             {
-                'name': 'Create server.jar',
-                'func': self._download_server,
-            },
-            {
                 'name': 'Create running file',
                 'func': self._create_dockerfile,
             },
@@ -34,17 +30,10 @@ class MinecraftBuilder(BaseBuilder):
             },
         ]
 
-    def _download_server(self) -> None:
-        try:
-            file_content = storage.read(self.server.version.filepath.path)
-        except FileNotFoundError:
-            raise BuilderNotFound('"server.jar" not found')
-        self.files['server.jar'] = BytesIO(file_content)
-
     def _create_dockerfile(self) -> None:
         self.files['Dockerfile'] = StringIO('''FROM openjdk:8u212-jre-alpine
 WORKDIR /home/app/
-CMD ["java","-Xmx2048M","-Xms2048M","-jar","server.jar","nogui"]''')
+CMD ["java","-Xmx2048M","-Xms2048M","-jar","/server.jar","nogui"]''')
 
     def _create_eula(self):
         self.files['eula.txt'] = StringIO('eula=TRUE')

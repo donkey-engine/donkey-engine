@@ -9,7 +9,10 @@ class MinecraftContainerConfig(ContainerConfig):
 
     @property
     def volumes(self):
-        return [f'{self.directory}:/home/app']
+        return [
+            f'{self.directory}:/home/app',
+            f'{self.filepath}:/server.jar:ro',
+        ]
 
 
 class MinecraftRunner(BaseRunner):
