@@ -14,8 +14,9 @@ class ContainerConfig:
     volumes: t.Sequence[str] = []
     ports: t.Dict[str, t.Optional[str]] = {}
 
-    def __init__(self, directory: str):
+    def __init__(self, directory: str, filepath: str):
         self.directory = directory
+        self.filepath = filepath
 
 
 class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues/51
@@ -25,10 +26,13 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
 
     def __init__(self, server_id: int, directory: str):
         self.server_id: int = server_id
-        self.server = Server.objects.get(id=server_id)
+        self.server = Server.objects.select_related('version').get(id=server_id)
         self.client: docker.DockerClient = docker.from_env()
         self.directory: str = directory
-        self.container_config = self.container_config_class(self.directory)
+        self.container_config = self.container_config_class(
+            directory=self.directory,
+            filepath=self.server.version.filepath.path,
+        )
 
     def get_container_port(self, attempts=100) -> int:
         """Get container open port."""
