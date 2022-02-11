@@ -3,9 +3,7 @@ from servers.helpers.runners.base import BaseRunner, ContainerConfig
 
 class MinecraftContainerConfig(ContainerConfig):
 
-    ports = {
-        '25565/tcp': None,
-    }
+    port = '25565/tcp'
 
     @property
     def volumes(self):

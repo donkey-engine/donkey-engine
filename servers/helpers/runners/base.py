@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class ContainerConfig:
 
     volumes: t.Sequence[str] = []
-    ports: t.Dict[str, t.Optional[str]] = {}
+    port: str
 
     def __init__(self, directory: str, filepath: str):
         self.directory = directory
@@ -36,18 +36,15 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
 
     def get_container_port(self, attempts=100) -> int:
         """Get container open port."""
-        if self.container_config.ports:
-            for _ in range(attempts):
-                for container in self.client.containers.list():
-                    if container.name != f'server{self.server_id}':
+        for _ in range(attempts):
+            for container in self.client.containers.list():
+                if container.name != f'server{self.server_id}':
+                    continue
+                for port in container.ports.get(self.container_config.port, []):
+                    if not port['HostPort']:
                         continue
-                    for port in container.ports.get('25565/tcp', []):
-                        if not port['HostPort']:
-                            continue
-                        return int(port['HostPort'])
-            raise exceptions.ServerNotRunning()
-        else:
-            return Server.DEFAULT_PORT
+                    return int(port['HostPort'])
+        raise exceptions.ServerNotRunning()
 
     def get_or_create_image(self) -> str:  # TODO add reuse existed images
         """Get or create docker image."""
@@ -103,7 +100,7 @@ class BaseRunner:  # FIXME https://github.com/donkey-engine/donkey-engine/issues
                 image_name,
                 detach=True,
                 volumes=self.container_config.volumes,
-                ports=self.container_config.ports,
+                ports={self.container_config.port: None},
                 name=f'server{self.server_id}',
                 remove=True,
                 hostname=f'server{self.server_id}',

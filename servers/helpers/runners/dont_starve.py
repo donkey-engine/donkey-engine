@@ -3,6 +3,8 @@ from servers.helpers.runners.base import BaseRunner, ContainerConfig
 
 class DontStarveContainerConfig(ContainerConfig):
 
+    port = '10999/udp'
+
     @property
     def volumes(self):
         return [
