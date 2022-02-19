@@ -10,7 +10,7 @@ class AuthSerializer(serializers.Serializer):
 class SignupSerializer(serializers.Serializer):
     """Serializer for Signup"""
     email = serializers.EmailField()
-    username = serializers.CharField()
+    username = serializers.CharField(trim_whitespace=False)
     password = serializers.CharField()
 
 
