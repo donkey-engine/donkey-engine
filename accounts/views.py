@@ -16,8 +16,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 
 from accounts.helpers.email import send_email_confirmation
-from accounts.helpers.user import (EmailAlreadyExists, UsernameAlreadyExists,
-                                   discord_signup, signup)
+from accounts.helpers.user import (EmailAlreadyExists, InvalidUsername,
+                                   UsernameAlreadyExists, discord_signup,
+                                   signup)
 from accounts.serializers import (AuthSerializer, ConfirmEmailSerializer,
                                   DiscordRedirectSerializer,
                                   ResendEmailSerializer, SignupSerializer)
@@ -74,6 +75,10 @@ class SignupApiView(generics.GenericAPIView):
             signup(validated_data['username'],
                    validated_data['password'],
                    validated_data['email'])
+        except InvalidUsername:
+            return JsonResponse(
+                {'username': ['May contain only english letters, numbers, and "." or "_"']},
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         except UsernameAlreadyExists:
             return JsonResponse(
                 {'username': ['Already exists']},

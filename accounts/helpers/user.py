@@ -4,6 +4,19 @@ from django.db import transaction
 from accounts.helpers.email import send_email_confirmation
 from accounts.models import Profile
 
+CHARACTERS = 'abcdefghijklmnopqrstuvwxuzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._'
+
+
+def is_username_valid(username: str) -> bool:
+    for char in username:
+        if char not in CHARACTERS:
+            return False
+    return True
+
+
+class InvalidUsername(Exception):
+    pass
+
 
 class UsernameAlreadyExists(Exception):
     pass
@@ -14,6 +27,9 @@ class EmailAlreadyExists(Exception):
 
 
 def signup(username: str, password: str, email: str) -> User:
+    if not is_username_valid(username):
+        raise InvalidUsername(username)
+
     if User.objects.filter(username=username).exists():
         raise UsernameAlreadyExists(username)
 

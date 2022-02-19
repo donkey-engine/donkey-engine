@@ -119,6 +119,57 @@ class AuthTestCase(TestCase):
         created_user = User.objects.get(username='test_username')
         self.assertFalse(created_user.is_active)
 
+    def test_create_user_with_similar_to_email_username(self):
+        client = Client()
+        response = client.post(
+            '/api/signup/',
+            {
+                'username': 'username@mail.ru',
+                'email': 'test@email.ua',
+                'password': 'test_password',
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(
+            response.json(),
+            {'username': ['May contain only english letters, numbers, and "." or "_"']}
+        )
+
+    def test_create_user_with_non_ascii_username(self):
+        client = Client()
+        response = client.post(
+            '/api/signup/',
+            {
+                'username': 'username✡',
+                'email': 'test@email.ua',
+                'password': 'test_password',
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(
+            response.json(),
+            {'username': ['May contain only english letters, numbers, and "." or "_"']}
+        )
+
+    def test_create_user_with_white_space_username(self):
+        client = Client()
+        response = client.post(
+            '/api/signup/',
+            {
+                'username': ' username',
+                'email': 'test@email.ua',
+                'password': 'test_password',
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(
+            response.json(),
+            {'username': ['May contain only english letters, numbers, and "." or "_"']}
+        )
+
 
 class DiscordAuthTestCase(TestCase):
 
