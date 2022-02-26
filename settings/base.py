@@ -8,9 +8,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '0.0.0.0',
-    '127.0.0.1',
-    'web',
+    '*',
 ]
 
 INSTALLED_APPS = [
