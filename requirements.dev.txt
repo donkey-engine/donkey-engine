@@ -3,6 +3,6 @@
 django-cors-headers==3.7.0
 django-stubs==1.7.0
 flake8==3.8.4
-ipython==7.31.1
+ipython==8.10.0
 isort==5.7.0
 mypy==0.800
